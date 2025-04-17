@@ -35,3 +35,19 @@ Sicuramente le funzionalitá piú importanti sono quelle relative alla sicurezza
 Se si hanno piú server (macchine) che rispondono alle stesse richieste, si possono indirizzare le richieste in modo che carico di lavoro sia distribuito equamente tra i vari server. In base all'algoritmo implementato il processo di load balancing puó essere fatto in modo accurato oppure piú grezzo. L'algoritmo scelto dipende molto dal caso d'uso.
 
 \section{SSL/TLS}
+SSL/TLS é il protocollo utilizzato per criptare le comuncazioni web, sia che si utilizzi https che wss (Secure WebSocket). SSL é la versione vecchia di questo protocollo che ormai non viene piú utilizzata perché usa protocolli troppo deboli rispetto alle capacitá computazionali odierne. Quindi un messaggio criptato tramite SSL ora verrebbe decriptata in relativa rapiditá. Questo rende la connessione non sicura. TLS inevece é il protocollo nuovo, che ora ha raggiunto la versione 1.3 che é considerato sicuro e difficilmente decriptabile con le tecnologie odierne.
+\subsection{Funzionamento}
+\subsubsection{Handshake}
+Quando viene instaurata la connessione i primi messaggi inviati dalle due parti servono per effettuare l'handshake. Durante questa fase si vanno a decidere protocolli utilizzati, chiavi, nonce.
+\begin{enumerate}
+  \item \textbf{fase 1}: Nella prima fase si negoziano la versione di TLS da utilizzare e i nonce, succesivamente utilizzate per identificare la sequenza dei messaggi.
+  \item \textbf{fase 2}: Il server invia al client la chiave pubblica per verificare il certificato e la sua parte di parametri in caso venga utilizzato DH come protocollo di condivisione della chiave.
+  \item \textbf{fase 3}: Il client tramite la chiave pubblica del certificato verifica che il server é il vero possessore del certificato e invia al server is suoi parametri in caso di DH, oppure la chiave criptata con la chiave pubblica del server in caso di RSA.
+\end{enumerate}
+\subsubsection{Record}
+I messaggi dopo quelli di handshake verranno poi criptati e verificato che non siano stati modificati.
+\begin{enumerate}
+\item \textbf{confidenzialitá}: il contenuto del messaggio deve essere visibile solamente alle 2 parti, se non si ha possesso delle chiavi non é possibile leggere il contenuto in chiaro.
+\item \textbf{integritá}: se il messaggio é stato modificato nel mezzo della comunicazione, questo deve essere identificabile. Per effettuare ció si calcola il valore hash del messaggio e si cripta tramite una chiave negoziata. Il ricevente calcolerá poi il valore hash del messaggio ricevuto e se i 2 valori combaciano vuol dire che il messaggio non é stato modificato.
+\end{enumerate}
+
