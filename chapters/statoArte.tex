@@ -51,3 +51,17 @@ I messaggi dopo quelli di handshake verranno poi criptati e verificato che non s
 \item \textbf{integritá}: se il messaggio é stato modificato nel mezzo della comunicazione, questo deve essere identificabile. Per effettuare ció si calcola il valore hash del messaggio e si cripta tramite una chiave negoziata. Il ricevente calcolerá poi il valore hash del messaggio ricevuto e se i 2 valori combaciano vuol dire che il messaggio non é stato modificato.
 \end{enumerate}
 
+\section{Container}
+\subsection{Cosa sono}
+\cite{container}I container sono software eseguibili che contengono tutte le dipendenze per essere eseguiti come librerie, binari e file di configurazione. Indipendentemente dal sistema "host", cioé il sistema su cui viene eseguito il container, quest'ultimo funzionerá sempre allo stesso modo. Per uno sviluppatore questo é molto importante perché altrimenti dovrebbe creare delle versioni diverse dello stesso software per adattarle a ogni tipo di sistema operativo.
+\subsection{Differenze dalle macchine virtuali}
+\begin{enumerate}
+  \item \textbf{kernel}: I container si appoggiano sul kernel del sistema operativo ospitante, mentre le macchine virtuali sono un sistema operativo che gira sopra il sistema operativo ospitante, con anche l'hardware che viene simulato. Questa differenza rende i container molto piú leggeri sia come utilizzo di risorse che come dimensione effettiva del software.
+  \item \textbf{isolamento}: I container isolano il software a livello di processo, mentre le chiamate kernel fanno affidamento al sistema operativo ospitante. Le macchine virtuali invece non condividono niente col sistema operativo ospitante in quanto un nuovo sistema operativo é emulato per intero. Questo maggiore isolamento peró non é necessario nella maggiore parte dei casi, almeno che non vengano utilizzate queste tecnologie per offrire dei servizi dove gli utenti posson eseguire del codice all'interno dell'ambiente virtualizzato. In questo caso é meglio avere l'ambiente completamente isolato.
+\end{enumerate}
+
+\subsection{Docker}
+\cite{docker}Docker é attulamente il software maggiormente utilizzato per la creazione, gestione ed esecuzione dei container. La sua popolaritá é dovuta principalmente alla semplicitá di utilizzo e alla gestione dei container. Infatti per creare un container bisogna creare un file dove vengono scritte le direttive per compilare il progetto e i comandi da eseguire quando il container viene eseguito. La gestione risulta inoltre comoda in quanto c'é un sistema di versionamento dei container, in stile git, che rende la gestione delle versioni comoda.
+
+\subsection{Kubernetes}
+Kubernetes é un ulteriore software che rende la scalabilitá dei container piú facile ed efficiente. Con kubernetes infatti si possono eseguire dei servizi utilizzando le risorse di diverse macchine. Quindi se si hanno molteplici macchine e un servizio molto difficile da eseguire, tramite kubernetes si possono dividere le operazioni su queste macchine.
