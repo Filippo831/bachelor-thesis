@@ -2,12 +2,23 @@
 \label{cha:statoArte}
 
 \section{Reverse Proxy}
-\subsection{Cos'é}
-Un reverse proxy é un dispositivo che fa da intermediario tra i server presenti sotto una rete locale e la rete esterna. Le comunicazioni in uscita dai server passano quindi dal reverse proxy e poi vanno verso gli utenti, e uguale quelle in ingresso, entrano nella rete locale attraverso il reverse proxy e poi vengono indirizzate ai server desiderati.
 \begin{figure}[h!]
   \centering
   \includegraphics[width=.6\textwidth]{images/schema.png}
 \end{figure}
+
+\subsection{Cos'é}
+Un reverse proxy é server che si pone in mezzo tra i server e i client. Le comunicazioni che quindi verranno effettuate tra questi 2 nodi, passeranno tutte attraveso il reverse proxy. Avendo accesso a tutte le comunicazioni, questo dispositivo puó effettuare dei test di sicurezza per assicurarsi che le richieste non siano maligne.
+
+\subsection{Esempio comunicazione}
+\textit{Client: A, Reverse proxy: R, Server: B}
+\begin{enumerate}
+  \item A invia un messaggio R, in cui peró specifica a quale server vuole collegarsi (questo viene effettuato tramite l'assegnazione di un subdomain specifico per ogni server).
+  \item R riceve la comunicazione, controlla a quale server é indirizzata e effettua una richiesta uguale a quella ricevuta peró cambiando il destinatario che in questo caso sará il server effettivo.
+  \item B riceve la richiesta, elabora la risposta ed invia a R la risposta.
+  \item R riceve la risposta e la invia ad A
+
+\end{enumerate}
 
 \subsection{Perché viene utilizzato}
 L'utilizzo di una struttura che si pone in mezzo alle comunicazioni garantisce molti vantaggi visto che ha accesso a tutte le comunicazioni entranti. Il reverse proxy puó quindi analizzare le connessioni ed effettuare delle operazioni con queste ultime come ad esempio controlli per motivi di sicurezza, chaching e load balancing. Inoltre in questo modo si puó accedere a piú servizi tramite lo stesso nodo di ingresso.
