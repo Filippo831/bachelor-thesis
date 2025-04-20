@@ -29,8 +29,8 @@ Analizziamo adesso le funzionalitá che un reverse proxy puó offrire.
 \subsubsection{Sicurezza}
 Sicuramente le funzionalitá piú importanti sono quelle relative alla sicurezza. Un reverse proxy infatti ne implementa molte evitando la necessitá di implementare sistemi di sicurezza per ogni servizio che andiamo ad inserire nella rete locale.
 \begin{enumerate}
-  \item \textbf{TLS}: Ogni comunicazioni in ingresso e in uscita puó essere criptata tramite il protocollo TLS.
-  \item \textbf{controllo attacchi DoS/DDoS}: Controllando tutte le comunicazioni e i relativi ip sorgente, si possono applicare filtri e controlli per evitare un eccesso di richieste in entrata che possono rallentare le funzionalitá dei server.
+  \item \textbf{TLS}: Le comunicazioni entranti ed uscenti dal reverse proxy possono essere criptate tramite il protocollo TLS, anche se un server non lo implementa. Quindi si possono effettuare le comunicazioni da server a reverse proxy in chiaro, e poi lasciare che diventi sicura solo dopo il reverse proxy.
+  \item \textbf{controllo attacchi DoS/DDoS}: Controllando tutte le comunicazioni e i relativi ip sorgente, si possono applicare filtri e controlli per evitare un eccesso di richieste in entrata che possono rallentare le funzionalitá dei server. In questo modo se si rileva un'anomalia di richeste ad un server che fa presumere ad un attacco DoS, si possono bloccare direttamente le richieste ancora prima che arrivino al server.
   \item \textbf{supporto protocolli piú recenti}: Il reverse proxy puó supportare protocolli piú recenti rispetto ai server cosí la connessione interna tra servere e reverse proxy puó essere effettuata nel protocollo piú recente supportata dal server, ma poi quella all'esterno puó essere elevata ad un protocollo piú recente e quindi con maggiore sicurezza.
 
 \end{enumerate}
@@ -41,6 +41,9 @@ Sicuramente le funzionalitá piú importanti sono quelle relative alla sicurezza
   \item \textbf{Cache}: Implementando un sistema di caching, richieste ricorrenti alle stesse risorse possono essere soddisfatte direttamente dal reverse proxy, senza inoltrare la richiesta al server.
   \item \textbf{Compressione}: Comprimere le risposte cosí da occupare meno banda e non influire sulle prestazioni dei server in quanto il processo di compressione e decompressione delle richieste é effettuato dal reverse proxy.
 \end{enumerate}
+
+\subsubsection{Singolo IP}
+Avendo solo un nodo collegato alla rete globale, si possono collegare molteplici servizi attraverso un solo indirizzo IP. Per fare ció si utilizzano i subdomain, cioé prefissi dell'URL base utilizzati per indirizzare risorse diverse. Con un reverse proxy si puó fare un'associazione subdomain -> server cosí da poterli indirizzare facilmente. La struttura dell'URL sará quindi \textit{http(s)://subdomain.example.com}.
 
 \subsubsection{Load Balancer}
 Se si hanno piú server (macchine) che rispondono alle stesse richieste, si possono indirizzare le richieste in modo che carico di lavoro sia distribuito equamente tra i vari server. In base all'algoritmo implementato il processo di load balancing puó essere fatto in modo accurato oppure piú grezzo. L'algoritmo scelto dipende molto dal caso d'uso.
