@@ -8,17 +8,38 @@
 \end{figure}
 
 \subsection{Cos'é}
-Un reverse proxy é server che si pone in mezzo tra i server e i client. Le comunicazioni che quindi verranno effettuate tra questi 2 nodi, passeranno tutte attraveso il reverse proxy. Avendo accesso a tutte le comunicazioni, questo dispositivo puó effettuare dei test di sicurezza per assicurarsi che le richieste non siano maligne.
+Un reverse proxy é un dispositivo utilizzato nelle comunicazioni tra client e server. Questo dispositivo si interpone nelle comunicazioni nel lato dei server. Quindi viene utilizzato nella rete locale dove sono presenti i server e diventa l'unico nodo di accesso verso la rete globale. Ogni server quindi non sará direttamente collegato al client che effettua la richiesta, ma é collegato al reverse proxy che successivamente inoltrerá le richieste ai relativi servere e le risposte ai relativi client. Si fa ció cosí si dimiuisce il carico di lavoro ai server perché non devono effettuare i controlli di sicurezza, che vengono invece effettuati direttamente dal reverse proxy. Inoltre, visto che tutte le comunicazioni passano per quel nodo, si puó avere una visione piú generale di tutte le comunicazioni entranti e rilevare piú facilmente comportamenti anomali.
+\subsubsection{Differenza con il forward proxy}
+Il forward proxy é un dispositivo che funziana praticamente allo stesso modo peró si trova nelle rete locale dei client. Quindi se si hanno piú client ma si vuole avere solo un nodo di uscita verso la rete globale, si puó utilizzare un forward proxy.
 
 \subsection{Esempio comunicazione}
-\textit{Client: A, Reverse proxy: R, Server: B}
+\subsubsection{Elementi}
+Client: C\\ Reverse Proxy: R\\ Server1: S1; Server2: S2
+\subsubsection{Configurazione Reverse Proxy}
+\paragraph{Dominio} Come esempio consideriamo il dominio \textit{example.com}. Quindi il reverse proxy risponderá alle richieste fatte a \textit{*.example.com}.
+\paragraph{Routing} Definiamo in base al subdomain quale server deve essere indirizzato
 \begin{enumerate}
-  \item A invia un messaggio R, in cui peró specifica a quale server vuole collegarsi (questo viene effettuato tramite l'assegnazione di un subdomain specifico per ogni server).
-  \item R riceve la comunicazione, controlla a quale server é indirizzata e effettua una richiesta uguale a quella ricevuta peró cambiando il destinatario che in questo caso sará il server effettivo.
-  \item B riceve la richiesta, elabora la risposta ed invia a R la risposta.
-  \item R riceve la risposta e la invia ad A
-
+  \item primo.example.com - server1 (172.17.0.1)
+  \item secondo.example.com - server2 (172.17.0.2)
 \end{enumerate}
+\subsubsection{Comunicazione}
+\begin{enumerate}
+  \item
+  \begin{verbatim}
+    GET /index.html HTTP/1.1
+    Host: primo.example.com
+  \end{verbatim}
+    C manda una richiesta tramite il dominio \textit{primo.example.com}
+  \item
+    \begin{verbatim}
+    GET /index.html HTTP/1.1
+    Host: 172.17.0.1
+    \end{verbatim}
+    R riceve la richiesta, vede che il dominio indicato ha \textit{primo} come sottodominio. Controlla nella configurazione e vede che \textit{primo.example.com} é collegato a S1. Crea quindi una richiesta uguale a quella ricevuta, cambiando il destinatario e indicando l'indirizzo ip di S1.
+  \item R riceve la risposta alla richiesta da S1.
+  \item R invia la risposta ricevuta a C.
+\end{enumerate}
+
 
 \subsection{Perché viene utilizzato}
 L'utilizzo di una struttura che si pone in mezzo alle comunicazioni garantisce molti vantaggi visto che ha accesso a tutte le comunicazioni entranti. Il reverse proxy puó quindi analizzare le connessioni ed effettuare delle operazioni con queste ultime come ad esempio controlli per motivi di sicurezza, chaching e load balancing. Inoltre in questo modo si puó accedere a piú servizi tramite lo stesso nodo di ingresso.
