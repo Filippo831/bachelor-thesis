@@ -69,6 +69,19 @@ Avendo solo un nodo collegato alla rete globale, si possono collegare molteplici
 \subsubsection{Load Balancer}
 Se si hanno piú server (macchine) che rispondono alle stesse richieste, si possono indirizzare le richieste in modo che carico di lavoro sia distribuito equamente tra i vari server. In base all'algoritmo implementato il processo di load balancing puó essere fatto in modo accurato oppure piú grezzo. L'algoritmo scelto dipende molto dal caso d'uso.
 
+\subsection{Criticitá}
+\cite{risks}
+\subsubsection{Aumento latenza}
+Le richieste devono passare un nodo in piú nel loro viaggi o tra il client e il server. Questo implica un tempo di elaborazione del pacchetto da parte del nodo che non ci sarebbe stato altrimenti e quindi anche un aumento della durata totale della comunicazione.
+\subsubsection{Singolo punto di rottura}
+Avendo tutte le comunicazioni che passano per il reverse proxy, é immediato che questo dispositivo diventa un elemento molto critico. Avere un problema di funzionalitá a questo nodo compromette le comunicazioni dirette a tutti i server. Cosa che non succederebbe se ogni server avesse un accesso alla rete globale indipendente.
+\subsubsection{Possibili colli di bottiglia}
+Il carico di lavoro sul reverse proxy puó diventare molto grande se si inseriscono molti servizi a monte. La potenza necessaria per non avere problemi di rallenatmenti deve essere valutata quindi molto bene altrimenti ne risentono tutti i servizi a monte anche se il server associato a quel servizio non sta avendo un grande carico di lavoro.
+\subsubsection{Sicurezza}
+Ovviamente il reverse proxy serve per aumentare il livello di sicurezza ma sua volta, essendo un software, puó essere soggietto a falle di sicurezza. Bisogna quindi assicurarisi che la configurazione del dispositivo sia fatta in modo da non lasciare porte aperte a possibili attacchi e verificare sempre gli aggiornamenti.
+
+
+
 \section{SSL/TLS}
 \cite{tls}SSL (Secure Socket Layer) e TLS (Transport Layer Security) sono protocolli utilizzati per criptare le comunicazioni web, sia che si utilizzi https che wss (Secure WebSocket). SSL é la versione vecchia di questo protocollo che ormai non viene piú utilizzata perché usa algoritmi troppo deboli rispetto alle capacitá computazionali odierne. Quindi un messaggio criptato tramite SSL ora verrebbe decriptata in relativa rapiditá rendendo lo scambio di messaggi non sicuro. TLS inevece é il protocollo nuovo, che ora ha raggiunto la versione 1.3 che é considerato sicuro e difficilmente decriptabile con le tecnologie odierne. Quando TLS é attivato, il protocollo http che precedentemente aveva come porta di default la numero 80, passa al protocollo https che ha come porta di default la 443.
 \subsection{Funzionamento}
