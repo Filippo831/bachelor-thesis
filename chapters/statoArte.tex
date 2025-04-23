@@ -83,8 +83,8 @@ Ovviamente il reverse proxy serve per aumentare il livello di sicurezza ma sua v
 
 
 \section{SSL/TLS}
-\cite{tls}SSL (Secure Socket Layer) e TLS (Transport Layer Security) sono protocolli utilizzati per criptare le comunicazioni web, sia che si utilizzi https che wss (Secure WebSocket). SSL é la versione vecchia di questo protocollo che ormai non viene piú utilizzata perché usa algoritmi troppo deboli rispetto alle capacitá computazionali odierne. Quindi un messaggio criptato tramite SSL ora verrebbe decriptata in relativa rapiditá rendendo lo scambio di messaggi non sicuro. TLS inevece é il protocollo nuovo, che ora ha raggiunto la versione 1.3 che é considerato sicuro e difficilmente decriptabile con le tecnologie odierne. Quando TLS é attivato, il protocollo http che precedentemente aveva come porta di default la numero 80, passa al protocollo https che ha come porta di default la 443.
-\subsection{Funzionamento}
+\cite{tls}SSL (Secure Socket Layer) e TLS (Transport Layer Security) sono protocolli finalizzati a garantire privacy e sicurezza nelle comunicazioni web. Per fare ció utilizzano degli algoritmi per criptare le comunicazioni e fare in modo che solo chi é in possesso delle chiavi puó vedere il contenuto originale del messaggio. SSL é il protocollo vecchio nato nel 1995 e attualmente non piú utilizzato. Gli algoritmi utilizzati nel protocollo SSL sono attualmente obsoleti e troppo deboli rispetto alla capacitá computazionale delle macchine odierne. Una comunicazione puó essere quindi decriptata con relativa facilitá, facendo cadere le garanzie di privacy e sicurezza indicate precedentemente. TLS invece é il protocollo attualmente utilizzato, adesso arrivato alla versione 1.3. Questo é il protocollo uttualmente utilizzato e impiega algoritmi che attulamente sono ancora considerati sicuri in quanto estremamente difficili da aggirare con la potenza di calcolo di cui si dispone ora.
+\subsection{Funzionamento TLS}
 \subsubsection{Handshake}
 Quando viene instaurata la connessione i primi messaggi inviati dalle due parti servono per effettuare l'handshake. Durante questa fase si vanno a decidere protocolli utilizzati, chiavi, nonce.
 \begin{enumerate}
@@ -99,12 +99,25 @@ I messaggi dopo quelli di handshake verranno poi criptati e verificato che non s
 \item \textbf{integritá}: se il messaggio é stato modificato nel mezzo della comunicazione, questo deve essere identificabile. Per effettuare ció si calcola il valore hash del messaggio e si cripta tramite una chiave negoziata. Il ricevente calcolerá poi il valore hash del messaggio ricevuto e se i 2 valori combaciano vuol dire che il messaggio non é stato modificato.
 \end{enumerate}
 
-\subsection{Certificati}
-Una parte molto importante nelle comunicazioni web lo hanno i certificati, fondamentali per assicurarsi che il server sia l'effettivo possessore del dominio. Un certificato non é altro che una coppia chiave pubblica e chiave privata che viene consegnata ad un server quando questo dimostra che é il vero possessore del dominio dichiarato.
-\subsubsection{Chain of Trust}
+\section{Certificati}
+\cite{certificates}
+I certificati servono per abilitare l'utilizzo di HTTPS, cioė la versione criptata del protocollo HTTP. I certificati sono coppie di chiavi (privata e pubblica) e altre informazioni relative al server che possiede il certificato. I certificati sono fondamentali nella comunicazioni per verificare che il server con cui si sta comunicando sia l'effettivo possessore del dominio a cui stiamo mandando le richieste.
+\subsection{Informazioni contenute nel certificato}
+\begin{enumerate}
+  \item dominio e sottodomini
+  \item chiave pubblica
+  \item chiave privata (questa non viene condivisa con il client)
+  \item ente che ha emesso il certificato
+  \item informazioni sul possessore del certificato
+  \item informazioni sulla chiave pubblica
+  \item data di scadenza
+  \item data di emissione
+
+\end{enumerate}
+\subsection{Chain of Trust}
 Per fare in modo che un utente si possa fidare del certificato appartenente al server si utilizza un sistema chiamato Chain of Trust. Esistono degli enti che rilasciano chiavi a cui viene data fiducia a prescindere (root of trust). Questi enti rilasciano a degli altri enti di rilascio chiavi delle chiavi. Quando gli enti del secondo livello rilasciano le chiavi, nella loro chiave viene segnato che é stata rilasciata da uno degli enti di primo livello. Quindi se un server si fa rilasciare una chiave da un ente di secondo livello, l'utente nella chiave vedrá che é stato rilasciato da un determinato ente di secondo livello che a sua volta ha una chiave rilasciata da un ente di primo livello. L'utente andrá quindi a vedere se questo ente di primo livello é presente nella lista degli enti a cui viene data fiducia e se sí il collegamento puó continuare senza problemi.
 
-\subsubsection{Come verificare un certificato}
+\subsection{Come verificare un certificato}
 Per assicurarsi che il server sia il vero possessore della chiave privata del certificato si fá criptare un messaggio dal server con la sua chiave privata e poi il cliente lo decripta con la chiave pubblica. Quindi l'unico modo per costruire un messaggio che poi decriptato con la chiave pubblica abbia un senso é avendo la chiave privata. Il server quindi calcola un hash value di alcune informazione relative al certificato e che vengono condivise con il client e poi lo cripta con la chiave pubblica. Invia il valore al client che lo decripterá con la chiave pubblica. Il client calcola a sua volta lo stesso hash value e poi lo compara con quello ricevuto dal server. Se i 2 combaciano vuol dire che il server possiede la chiave privata giusta e quindi il client si puó fidare.
 
 \section{Container}
