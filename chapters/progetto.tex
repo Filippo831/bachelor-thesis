@@ -1,0 +1,30 @@
+\chapter{Progetto}
+\label{cha:Progetto}
+
+\section{Descrizione}
+Il progetto in questione é un semplice reverse proxy realizzato nel linguaggio di programmazione go e poi containerizzato tramite docker. Il reverse proxy sviluppato effettua alcune delle funzionalitá basi necessarie per la comunicazione. Le funzionalitá implementate sono quindi quelle di routing, supporto a https e wss tramite TLS, configurazione tramite file json.
+
+\section{Obiettivi}
+\subsection{Implementativi}
+L'obiettivo principale di questo progetto era quello di creare un software che riuscisse a funzionare con comunicazioni http. La lista degli obiettivi inizialmente quindi era:
+\begin{enumerate}
+  \item supporto http
+  \item configurazione via file
+  \item sistema di logging per il controllo di eventuali errori
+\end{enumerate}
+Durante l'implementazione peró ho visto che go ha delle librerie molto ben fornite per lo sviluppo di server e comunque della gestione dei protocolli di comunicazione. Quindo ho visto la possibilitá di ampliare la lista degli obiettivi cercando di includere anche tecnologie nuove come http3. La lista degli obiettivi finali quindi é diventata:
+\begin{enumerate}
+  \item supporto http/https
+  \item supporto websocket (ws/wss)
+  \item configurazione via file
+  \item chunk encoding
+  \item supporto dei subdomain
+  \item supporto http2
+  \item supporto http3 (anche se non perfettamente funzionante)
+  \item sistema di logging per il controllo di eventuali errori
+\end{enumerate}
+
+\subsection{Conoscenze}
+L'obiettivo principale che ha fatto nascere questo progetto era l'interesse mio nell'approfondire e mettere in pratica le nozioni apprese in materia di comunicazioni web nei corsi che ho frequentato. Anche la scelta del linguaggio di programmazione go é stata fatta con lo scopo di imparare un linguaggio di programmazione che sta diventando via via sempre piú popolare nello sviluppo di server o applicativi che hanno a che fare con il networking. Questo grazie alla sua natura di basso livello che lo rende molto veloce nell'esecuzione ma anche alla vasta varietá di librerie standart che velocizzano molto lo sviluppo, lasciando spazio all'implementazione di nuove feature. Questo sará anche un punto a favore nel mioprogetto perché mi ha lasciato spazio per testare e provare piú funzionalitá di quelle che avevo previsto.
+
+\section{Funzionamento}
