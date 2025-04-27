@@ -1,0 +1,35 @@
+\lstdefinelanguage{JavaScript}{
+  morekeywords={
+    break, case, catch, class, const, continue, debugger, default, delete, do, else,
+    export, extends, finally, for, function, if, import, in, instanceof, let, new,
+    return, super, switch, this, throw, try, typeof, var, void, while, with, yield,
+    await, async, static
+  },
+  morekeywords=[2]{true, false, null, undefined, NaN, Infinity},
+  morekeywords=[3]{console, window, document, Math, JSON, Date, Array, String, Number, Boolean, Promise, RegExp, Error},
+  sensitive=true,
+  morecomment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  morestring=[b]",
+  morestring=[b]',
+  morestring=[b]`,
+  keywordstyle=\color{gruvblue}\bfseries,
+  keywordstyle=[2]\color{gruvaqua},
+  keywordstyle=[3]\color{gruvpurple},
+  commentstyle=\color{gruvgray}\ttfamily\itshape,
+  stringstyle=\color{gruvgreen}\ttfamily,
+  basicstyle=\ttfamily\color{gruvfg}\small,
+  backgroundcolor=\color{gruvbg},
+  numbers=left,
+  numberstyle=\tiny\color{gruvgray},
+  stepnumber=1,
+  numbersep=10pt,
+  showspaces=false,
+  showstringspaces=false,
+  tabsize=2,
+  captionpos=b,
+  breaklines=true,
+  breakatwhitespace=true,
+  escapeinside={(*@}{@*)}
+}
+

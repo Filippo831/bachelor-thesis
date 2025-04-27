@@ -82,5 +82,61 @@ Il progetto é stato strutturato con una struttura base ampliamente utilizzata n
     ]
 }
 \end{lstlisting}
+\subsection{Descrizione}
+\begin{itemize}[label={}]
+  \item \textbf{servers}: Lista dei server che si vogliono avviare all'avviamento del programma.
+  \item \textbf{port}: Parta di accesso al server.
+  \item \textbf{server\_name}: dominio del server.
+  \item \textbf{http3}: Abilitare o no il server anche in modalitá http3.
+  \item \textbf{ssl\_to\_client}: Abilitare o no la criptazione dei messaggi da reverse proxy a client.
+  \item \textbf{ssl\_certificate}: Percorso del certificato ssl.
+  \item \textbf{ssl\_certificate\_key}: Percorso della chiave del certificato.
+  \item \textbf{chunk\_encoding}: Impostare l'invio dei dati in pacchetti per diminuire la dimensione di ognuno.
+  \item \textbf{chunk\_size}: grandezza del pacchetto.
+  \item \textbf{chunk\_timeout}: tempo entro la quale il pacchetto viene inviato anche se non ha raggiunto la dimensione definita da \texttt{chunk\_size}.
+  \item \textbf{location}: Lista delle direttive di routing in base al sottodominio.
+  \item \textbf{subdomain}: Indica il sottodominio che poi viene collegato al server dietro a \texttt{to}.
+  \item \textbf{to}: Locazione del server a cui vengono inviate le richieste mandate tramite il sottodominio definito precedentemente.
+\end{itemize}
 
+\section{Implementazione}
+\subsection{Lettura file configurazione}
+Essendo il file di configurazione un json, si possono sfruttare le librerie di go per generare una struttura con la stessa struttura definita nella configurazione partendo dal file json. Viene quindi definita la struttura indicando ogni variabile a quale chiave corrisponde.
+\begin{lstlisting}[language=Golang]
+type Configuration struct {
+	Http []Server `json:"servers"`
+}
+type Server struct {
+	Port int `json:"port"`
+	ServerName string `json:"server_name"`
+	Http3Active bool `json:"http3"`
+	Location []Location `json:"location"`
+	SslToClient bool `json:"ssl_to_client"`
+	SslCertificate string `json:"ssl_certificate"`
+	SslCertificateKey string `json:"ssl_certificate_key"`
+	MaxRedirect int `json:"max_redirect"`
+	ChunkEncoding bool `json:"chunk_encoding"`
+	ChunkSize int `json:"chunk_size"`
+	ChunkTimeout int `json:"chunk_timeout"`
+}
 
+type Location struct {
+	Domain string `json:"domain"`
+	To string `json:"to"`
+}
+\end{lstlisting}
+Questa struttura viene poi popolata con le informazioni presenti nel file con questa sequenza di funzioni.
+\begin{lstlisting}[language=Golang]
+var Conf Configuration
+jsonFile, err := os.Open(filePath)
+byteValue, err := io.ReadAll(jsonFile)
+readingJsonErr := json.Unmarshal(byteValue, &Conf)
+\end{lstlisting}
+Successivamente vengono fatti dei test per effettuare queste verifiche:
+\begin{itemize}
+  \item Le impostazioni per abilitare la criptografia sono state inserite correttamente.
+  \item Non ci sono sottodomini nello stesso server che si sovrappongono.
+  \item I valori indicati nel \texttt{chunk\_encoding} non eccedono i limiti.
+\end{itemize}
+
+\subsection{Avvio servers}
