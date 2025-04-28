@@ -82,7 +82,40 @@ Ovviamente il reverse proxy serve per aumentare il livello di sicurezza ma sua v
 
 
 \section{Http}
+\cite{http}
+Http é il protocollo che sta alla base di tutti gli scambi di informazioni sul Web. É un protocollo client-server, cioé che il cliente manda al server delle richieste e quest ultimo a risponde con i dati richiesti.
+\subsection{Struttura messaggi}
+\subsubsection{Richieste}
+\begin{verbatim}
+GET /index.html HTTP/1.1
+Host: example.com
+\end{verbatim}
+\begin{itemize}[label={}]
+  \item \textbf{GET}: indica il tipo di operazione che andiamo a fare. Le 2 operazioni piú comuni sono \texttt{GET} e \texttt{POST}. \texttt{GET} serve per richiedere dei dati al server, infatti non include un body nel messaggio. \texttt{POST} serve per iniviare dati al server all'interno del body.
+  \item \textbf{/index.html}: percorso identificativo della risorsa. Il server associerá poi ad ogni percorso dei dati da inviare al client.
+  \item \textbf{HTTP/1.1}: specifica la versione del protocollo utilizzata.
+  \item \textbf{Host: example.com}: header. Qui vengono inserite informazioni extra per dare maggiori informazioni circa i dati che stiamo richiedendo al server.
+\end{itemize}
 
+\subsubsection{Risposte}
+\begin{verbatim}
+HTTP/1.1 200 OK
+Content-Type: text/html; charset=UTF-8
+Server: Apache
+Content-Length: 3272
+
+<!DOCTYPE html>
+<html>
+<!-- ... HTML content ... -->
+</html>
+\end{verbatim}
+\begin{itemize}[label={}]
+  \item \textbf{HTTP/1.1}: indica la versione utilizzata dal server per inviare la risposta.
+  \item \textbf{200}: codice di stato. Informazione sullo stato della risposta. 200 significa che la richiesta é andata a buon fine.
+  \item \textbf{OK}: descrizione del codice di stato.
+  \item \textbf{Content-type ...}: header. Contiene informazioni sulla risposta come tipo di contenuto e lunghezza.
+  \item \textbf{\textless!DOCTYPE html\textgreater ...}: body. Contiene i dati richiesti dal client.
+\end{itemize}
 
 \section{SSL/TLS}
 \cite{tls}SSL (Secure Socket Layer) e TLS (Transport Layer Security) sono protocolli finalizzati a garantire privacy e sicurezza nelle comunicazioni web. Per fare ció utilizzano degli algoritmi per criptare le comunicazioni e fare in modo che solo chi é in possesso delle chiavi puó vedere il contenuto originale del messaggio. SSL é il protocollo vecchio nato nel 1995 e attualmente non piú utilizzato. Gli algoritmi utilizzati nel protocollo SSL sono attualmente obsoleti e troppo deboli rispetto alla capacitá computazionale delle macchine odierne. Una comunicazione puó essere quindi decriptata con relativa facilitá, facendo cadere le garanzie di privacy e sicurezza indicate precedentemente. TLS invece é il protocollo attualmente utilizzato, adesso arrivato alla versione 1.3. Questo é il protocollo uttualmente utilizzato e impiega algoritmi che attulamente sono ancora considerati sicuri in quanto estremamente difficili da aggirare con la potenza di calcolo di cui si dispone ora.
