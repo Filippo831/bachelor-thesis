@@ -140,3 +140,83 @@ Successivamente vengono fatti dei test per effettuare queste verifiche:
 \end{itemize}
 
 \subsection{Avvio servers}
+Per l'avvio dei server definiti all'interno della configurazione, viene utilizzato un ciclo for che prende ogni server e lo utilizza per creare la configurazione di avvio.
+\begin{lstlisting}[language=Golang]
+for _, server := range readconfiguration.Conf.Http {
+\end{lstlisting}
+All'interno viene poi definita la funzione di Handler che contiene le funzioni da eseguire quando arriva una richiesta.
+\begin{lstlisting}[language=Golang]
+  proxy := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+    ...
+  }
+\end{lstlisting}
+Successivamente in base alle caratteristiche del server, quindi se il supporto a http3 é attivo oppure se l'SSL é attivo, viene chiamata una funzione diversa dalla libreria http di go che avvia il server desiderato. Per far funzionare piú server in contemperanea, ognuno viene fatto eseguire dentro un thread dedicato.
+
+\begin{lstlisting}[language=Golang]
+  var wg sync.WaitGroup
+
+  if server.Http3Active {
+    wg.Add(2)
+    go func() {
+      defer wg.Done()
+      errs <- http2Server.ListenAndServeTLS(server.SslCertificate, server.SslCertificateKey)
+    }()
+
+    go func() {
+      defer wg.Done()
+      errs <- http3Server.ListenAndServeTLS(server.SslCertificate, server.SslCertificateKey)
+    }()
+
+  } else {
+    wg.Add(1);
+    	if sslCertificate == "" && sslKey == "" && !sslActivate {
+		RunHttp(proxy, port, readTimeout, writeTimeout, idleTimeout, wg)
+	} else if sslCertificate != "" && sslKey != "" && sslActivate {
+		RunHttps(proxy, port, readTimeout, writeTimeout, idleTimeout, sslCertificate, sslKey, wg)
+	}
+  }
+\end{lstlisting}
+\subsubsection{http3}
+Quando viene selezionato il server http3, viene comunque avviato anche un server http2 di supporto. Questo serve perché la prima connessione da parte di un client viene sempre fatta tramite il protocollo http2. Utilizzando http2 tcp mentre http3 udp, quest'ultimo non puó rispondere alla richiesta http2. Il server http2 quindi risponde alla prima richiesta notificando che si puó cambiare la communicazione ed elevarla al protocollo http3. Per notificare la presenza del server http3 si aggiunge questa stringa nell'Header del messaggio.\\
+\texttt{alt-svc h3=":\$PORT"; ma=86400}
+
+\subsection{Funzione Handler}
+Questa funzione é quella che gestisce le comunicazioni che arrivano dai vari client. Quindi ha il compito di inoltrare la richiesta al server desiderato creando una richiesta uguale a quella ricevuta e modificando il destinatario.\\La prima operazione che viene effettuata é la verifica del subdomain indicato per vedere se questo effettivamente esiste nei file di configurazione.
+\begin{lstlisting}[language=Golang]
+proxy := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+  redirectURL, _ := nil
+  found := false
+  domain := r.Host
+  domain = strings.Split(domain, ":")[0]
+
+  for _, location := range server.Location {
+    if domain == location.Domain {
+      redirectURL, _ = url.Parse(location.To)
+      found = true
+    }
+  }
+  if !found {
+    fmt.Fprintf(w, "subdomain not found")
+    return
+  }
+\end{lstlisting}
+
+Una volta trovato l'indirizzo del server destinatario si puó creare la richiesta da inviarli.
+\begin{lstlisting}[language=Golang]
+	r.Host = redirectURL.Host
+	r.URL.Host = redirectURL.Host
+	r.URL.Scheme = redirectURL.Scheme
+	r.RequestURI = ""
+
+	client_host, _, _ := net.SplitHostPort(r.RemoteAddr)
+	r.Header.Set("X-Forwarded-For", client_host)
+\end{lstlisting}
+E a questo punto la richiesta viene inviata al server e la risposta ricevuta viene inoltrata al client. Il processo a questo punto viene differenziato in base che la connessione sia tramite websocket oppure http.
+\begin{lstlisting}[language=Golang]
+  if r.Header.Get("Upgrade") == "websocket" {
+    websocket_handler.Handle_websocket(w, redirect, server.SslToClient, redirectURL.Scheme == "https")
+  } else {
+    http_handler.HttpHandler(w, redirect, server)
+  }
+\end{lstlisting}
+
