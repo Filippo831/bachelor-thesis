@@ -116,6 +116,11 @@ Content-Length: 3272
   \item \textbf{Content-type ...}: header. Contiene informazioni sulla risposta come tipo di contenuto e lunghezza.
   \item \textbf{\textless!DOCTYPE html\textgreater ...}: body. Contiene i dati richiesti dal client.
 \end{itemize}
+\subsection{Caratteristiche}
+\subsubsection{Semplice}
+Le informazioni del protocollo sono scritte con un linguaggio umano, quindi facile da testare e controllare in fase id implementazione.
+\subsubsection{Stateless}
+Il protocollo non mantiene lo stato della connessione, quindi se un utente fa due richieste allo stesso server, per quest'ultimo le due richieste sono indipendentemente l'une dalle altre. Questo potrebbe essere un punto a svavore sopratutto in caso di siti che richiedono un'autenticazione perché il client si deve autenticare ogni volta che accede. Per sopperire a questo problema vengono utilizzati i cookies, cioé delle stringhe che identificano il client e che vengono salvate sulla memoria del browser. Quando il client fa una richiesta, il cookie viene allegato alla richiesta e il server puó verificare tramite quello che il client é autenticato.
 
 \section{SSL/TLS}
 \cite{tls}SSL (Secure Socket Layer) e TLS (Transport Layer Security) sono protocolli finalizzati a garantire privacy e sicurezza nelle comunicazioni web. Per fare ció utilizzano degli algoritmi per criptare le comunicazioni e fare in modo che solo chi é in possesso delle chiavi puó vedere il contenuto originale del messaggio. SSL é il protocollo vecchio nato nel 1995 e attualmente non piú utilizzato. Gli algoritmi utilizzati nel protocollo SSL sono attualmente obsoleti e troppo deboli rispetto alla capacitá computazionale delle macchine odierne. Una comunicazione puó essere quindi decriptata con relativa facilitá, facendo cadere le garanzie di privacy e sicurezza indicate precedentemente. TLS invece é il protocollo attualmente utilizzato, adesso arrivato alla versione 1.3. Questo é il protocollo uttualmente utilizzato e impiega algoritmi che attulamente sono ancora considerati sicuri in quanto estremamente difficili da aggirare con la potenza di calcolo di cui si dispone ora.
