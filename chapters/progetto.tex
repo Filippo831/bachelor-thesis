@@ -2,7 +2,7 @@
 \label{cha:Progetto}
 
 \section{Descrizione}
-Il progetto in questione é un semplice reverse proxy realizzato nel linguaggio di programmazione go e poi containerizzato tramite docker. Il reverse proxy sviluppato effettua alcune delle funzionalitá basi necessarie per la comunicazione. Le funzionalitá implementate sono quindi quelle di routing, supporto a https e wss tramite TLS, configurazione tramite file json.
+Il progetto consiste è nell'implementazione di un reverse proxy nel linguaggio di programmazione go e successivamente containerizzato tramite docker. Il reverse proxy sviluppato effettua alcune delle funzionalità basi necessarie per la comunicazione. Le funzionalitá implementate sono quindi quelle di routing, supporto a https e wss tramite TLS, e la possibilitá di configurarlo tramite file json.
 
 \section{Obiettivi}
 \subsection{Implementativi}
@@ -12,7 +12,7 @@ L'obiettivo principale di questo progetto era quello di creare un software che r
   \item configurazione via file
   \item sistema di logging per il controllo di eventuali errori
 \end{enumerate}
-Durante l'implementazione peró ho visto che go ha delle librerie molto ben fornite per lo sviluppo di server e comunque della gestione dei protocolli di comunicazione. Quindo ho visto la possibilitá di ampliare la lista degli obiettivi cercando di includere anche tecnologie nuove come http3. La lista degli obiettivi finali quindi é diventata:
+Durante l'implementazione però ho visto che go ha delle librerie molto ben fornite per lo sviluppo di server e comunque della gestione dei protocolli di comunicazione. Quando ho visto la possibilità di ampliare la lista degli obiettivi cercando di includere anche tecnologie nuove come http3. La lista degli obiettivi finali quindi è diventata:
 \begin{enumerate}
   \item supporto http/https
   \item supporto websocket (ws/wss)
@@ -25,24 +25,24 @@ Durante l'implementazione peró ho visto che go ha delle librerie molto ben forn
 \end{enumerate}
 
 \subsection{Conoscenze}
-L'obiettivo principale che ha fatto nascere questo progetto era l'interesse mio nell'approfondire e mettere in pratica le nozioni apprese in materia di comunicazioni web nei corsi che ho frequentato. Anche la scelta del linguaggio di programmazione go é stata fatta con lo scopo di imparare un linguaggio di programmazione che sta diventando via via sempre piú popolare nello sviluppo di server o applicativi che hanno a che fare con il networking. Questo grazie alla sua natura di basso livello che lo rende molto veloce nell'esecuzione ma anche alla vasta varietá di librerie standart che velocizzano molto lo sviluppo, lasciando spazio all'implementazione di nuove feature. Questo sará anche un punto a favore nel mioprogetto perché mi ha lasciato spazio per testare e provare piú funzionalitá di quelle che avevo previsto.
+L'obiettivo principale che ha fatto nascere questo progetto era l'interesse mio nell'approfondire e mettere in pratica le nozioni apprese in materia di comunicazioni web nei corsi che ho frequentato. Anche la scelta del linguaggio di programmazione go è stata fatta con lo scopo di imparare un linguaggio di programmazione che sta diventando via via sempre piú popolare nello sviluppo di server o applicativi che hanno a che fare con il networking. Questo grazie alla sua natura di basso livello che lo rende molto veloce nell'esecuzione ma anche alla vasta varietà di librerie standard che velocizzano molto lo sviluppo, lasciando spazio all'implementazione di nuove feature. Questo sarà anche un punto a favore nel mio progetto perché mi ha lasciato spazio per testare e provare piú funzionalitá di quelle che avevo previsto.
 
 \section{Struttura}
 Il progetto é stato strutturato con una struttura base ampliamente utilizzata nei progetti in go che consiste nel dividere i file di programmazione in file interni o file eseguibili. Nei file interni ci sono tutte le funzioni di supporto che poi verranno utilizzate per far funzionare i comandi eseguibili.
 \subsection{Schema ad albero}
 \begin{verbatim}
 - cmd
-   - reverse_proxy
+   - reverse_proxy
 - configuration.json
 - Dockerfile
 - go.mod
 - go.sum
 - internal
-   - http_handler
-   - read_configuration
-   - reverse_proxy
-   - run_server
-   - websocket_handler
+   - http_handler
+   - read_configuration
+   - reverse_proxy
+   - run_server
+   - websocket_handler
 - test
 \end{verbatim}
 \subsection{descrizione elementi}
@@ -60,26 +60,26 @@ Il progetto é stato strutturato con una struttura base ampliamente utilizzata n
 \subsection{Struttura file configurazione}
 \begin{lstlisting}[language=Javascript]
   {
-    "servers": [
-        {
-            "port": int,
-            "server_name": string,
-            "http3": bool,
-            "ssl_to_client": bool,
-            "ssl_certificate": string,
-            "ssl_certificate_key": string,
-            "max_redirect": int,
-            "chunk_encoding": bool,
-            "chunk_size": int,
-            "chunk_timeout": int,
-            "location": [
-                {
-                    "subdomain": string,
-                    "to": string
-                },
-            ]
-        }
-    ]
+	"servers": [
+    	{
+        	"port": int,
+        	"server_name": string,
+        	"http3": bool,
+        	"ssl_to_client": bool,
+        	"ssl_certificate": string,
+        	"ssl_certificate_key": string,
+        	"max_redirect": int,
+        	"chunk_encoding": bool,
+        	"chunk_size": int,
+        	"chunk_timeout": int,
+        	"location": [
+            	{
+                	"subdomain": string,
+                	"to": string
+            	},
+        	]
+    	}
+	]
 }
 \end{lstlisting}
 \subsection{Descrizione}
@@ -147,41 +147,41 @@ for _, server := range readconfiguration.Conf.Http {
 All'interno viene poi definita la funzione di Handler che contiene le funzioni da eseguire quando arriva una richiesta.
 \begin{lstlisting}[language=Golang]
   proxy := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-    ...
+	...
   }
 \end{lstlisting}
-Successivamente in base alle caratteristiche del server, quindi se il supporto a http3 é attivo oppure se l'SSL é attivo, viene chiamata una funzione diversa dalla libreria http di go che avvia il server desiderato. Per far funzionare piú server in contemperanea, ognuno viene fatto eseguire dentro un thread dedicato.
+Successivamente in base alle caratteristiche del server, quindi se il supporto a http3 è attivo oppure se l'SSL è attiva, viene chiamata una funzione diversa dalla libreria http di go che avvia il server desiderato. Per far funzionare più server in contemporanea, ognuno viene fatto eseguire dentro un thread dedicato.
 
 \begin{lstlisting}[language=Golang]
   var wg sync.WaitGroup
 
   if server.Http3Active {
-    wg.Add(2)
-    go func() {
-      defer wg.Done()
-      errs <- http2Server.ListenAndServeTLS(server.SslCertificate, server.SslCertificateKey)
-    }()
+	wg.Add(2)
+	go func() {
+  	defer wg.Done()
+  	errs <- http2Server.ListenAndServeTLS(server.SslCertificate, server.SslCertificateKey)
+	}()
 
-    go func() {
-      defer wg.Done()
-      errs <- http3Server.ListenAndServeTLS(server.SslCertificate, server.SslCertificateKey)
-    }()
+	go func() {
+  	defer wg.Done()
+  	errs <- http3Server.ListenAndServeTLS(server.SslCertificate, server.SslCertificateKey)
+	}()
 
   } else {
-    wg.Add(1);
+	wg.Add(1);
     	if sslCertificate == "" && sslKey == "" && !sslActivate {
-		RunHttp(proxy, port, readTimeout, writeTimeout, idleTimeout, wg)
+    	RunHttp(proxy, port, readTimeout, writeTimeout, idleTimeout, wg)
 	} else if sslCertificate != "" && sslKey != "" && sslActivate {
-		RunHttps(proxy, port, readTimeout, writeTimeout, idleTimeout, sslCertificate, sslKey, wg)
+    	RunHttps(proxy, port, readTimeout, writeTimeout, idleTimeout, sslCertificate, sslKey, wg)
 	}
   }
 \end{lstlisting}
 \subsubsection{http3}
-Quando viene selezionato il server http3, viene comunque avviato anche un server http2 di supporto. Questo serve perché la prima connessione da parte di un client viene sempre fatta tramite il protocollo http2. Utilizzando http2 tcp mentre http3 udp, quest'ultimo non puó rispondere alla richiesta http2. Il server http2 quindi risponde alla prima richiesta notificando che si puó cambiare la communicazione ed elevarla al protocollo http3. Per notificare la presenza del server http3 si aggiunge questa stringa nell'Header del messaggio.\\
+Quando viene selezionato il server http3, viene comunque avviato anche un server http2 di supporto. Questo serve perché la prima connessione da parte di un client viene sempre fatta tramite il protocollo http2. Utilizzando http2 tcp mentre http3 udp, quest'ultimo non puó rispondere alla richiesta http2. Il server http2 quindi risponde alla prima richiesta notificando che si puó cambiare la comunicazione ed elevarla al protocollo http3. Per notificare la presenza del server http3 si aggiunge questa stringa nell'Header del messaggio.\\
 \texttt{alt-svc h3=":\$PORT"; ma=86400}
 
 \subsection{Funzione Handler}
-Questa funzione é quella che gestisce le comunicazioni che arrivano dai vari client. Quindi ha il compito di inoltrare la richiesta al server desiderato creando una richiesta uguale a quella ricevuta e modificando il destinatario.\\La prima operazione che viene effettuata é la verifica del subdomain indicato per vedere se questo effettivamente esiste nei file di configurazione.
+Questa funzione è quella che gestisce le comunicazioni che arrivano dai vari client. Quindi ha il compito di inoltrare la richiesta al server desiderato creando una richiesta uguale a quella ricevuta e modificando il destinatario.\\La prima operazione che viene effettuata é la verifica del subdomain indicato per vedere se questo effettivamente esiste nei file di configurazione.
 \begin{lstlisting}[language=Golang]
 proxy := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
   redirectURL, _ := nil
@@ -190,18 +190,18 @@ proxy := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
   domain = strings.Split(domain, ":")[0]
 
   for _, location := range server.Location {
-    if domain == location.Domain {
-      redirectURL, _ = url.Parse(location.To)
-      found = true
-    }
+	if domain == location.Domain {
+  	redirectURL, _ = url.Parse(location.To)
+  	found = true
+	}
   }
   if !found {
-    fmt.Fprintf(w, "subdomain not found")
-    return
+	fmt.Fprintf(w, "subdomain not found")
+	return
   }
 \end{lstlisting}
 
-Una volta trovato l'indirizzo del server destinatario si puó creare la richiesta da inviarli.
+Una volta trovato l'indirizzo del server destinatario si puó creare la richiesta da inviare.
 \begin{lstlisting}[language=Golang]
 	r.Host = redirectURL.Host
 	r.URL.Host = redirectURL.Host
@@ -214,9 +214,12 @@ Una volta trovato l'indirizzo del server destinatario si puó creare la richiest
 E a questo punto la richiesta viene inviata al server e la risposta ricevuta viene inoltrata al client. Il processo a questo punto viene differenziato in base che la connessione sia tramite websocket oppure http.
 \begin{lstlisting}[language=Golang]
   if r.Header.Get("Upgrade") == "websocket" {
-    websocket_handler.Handle_websocket(w, redirect, server.SslToClient, redirectURL.Scheme == "https")
+	websocket_handler.Handle_websocket(w, redirect, server.SslToClient, redirectURL.Scheme == "https")
   } else {
-    http_handler.HttpHandler(w, redirect, server)
+	http_handler.HttpHandler(w, redirect, server)
   }
 \end{lstlisting}
+
+
+
 
