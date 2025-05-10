@@ -221,5 +221,46 @@ E a questo punto la richiesta viene inviata al server e la risposta ricevuta vie
 \end{lstlisting}
 
 
-
+\section{Containerizzazione}
+Alla fine per creare il container bisogna scrivere un file \texttt{Dockerfile} con all'interno le direttive sui file da includere, i comandi da eseguire e altre informazioni utili all'esecuzione.
+\subsection{Analisi file}
+\begin{lstlisting}[language=Dockerfile]
+FROM golang:1.24-alpine AS builder
+\end{lstlisting}
+Definizione dell'ambiente di compilazione del reverse proxy. Viene utilizzata la versione go per linux alpine perché verrá poi eseguito su quest'ultimo. Linux alpine é stato scelto per la ridotta dimensione che rendeva la dimensione dell'immagine ridotta.
+\\
+\begin{lstlisting}[language=Dockerfile]
+WORKDIR /app
+COPY go.mod go.sum ./
+RUN go mod download
+\end{lstlisting}
+Creazione della cartella \texttt{/app} all'interno del container. Tutti i file copiati successivamente andranno a posizionarsi all'interno di questa cartella. Vengono poi copiati i file contenenti le informazioni e le librerie necessarie per eseguire il codice. Una volta copiati questi 2 file viene chiamata la funzione di go per scaricare tutti i pacchetti necessari.
+\\
+\begin{lstlisting}[language=Dockerfile]
+COPY cmd/ ./cmd/
+COPY internal/ ./internal/
+\end{lstlisting}
+Copia delle cartelle contenenti tutti i file \texttt{*.go}.
+\\
+\begin{lstlisting}[language=Dockerfile]
+RUN go build -o /reverse_proxy ./cmd/reverse_proxy
+\end{lstlisting}
+Compilazione del progetto e creazione del file eseguibile.
+\\
+\begin{lstlisting}[language=Dockerfile]
+FROM alpine:latest
+COPY --from=builder /reverse_proxy /reverse_proxy
+\end{lstlisting}
+Copia del file eseguibile in un nuovo ambiente, questa volta non contenente i pacchetti go, cosí da essere ancora piú leggero.
+\\
+\begin{lstlisting}[language=Dockerfile]
+EXPOSE 8081
+EXPOSE 8082
+\end{lstlisting}
+Esposizione delle porte 8081 e 8082.
+\\
+\begin{lstlisting}[language=Dockerfile]
+ENTRYPOINT ["/reverse_proxy"]
+\end{lstlisting}
+Assegnazione del comando da eseguire all'avvio del container. In questo caso viene avviato il reverse proxy.
 

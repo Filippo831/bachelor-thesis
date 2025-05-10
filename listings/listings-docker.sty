@@ -1,0 +1,27 @@
+\lstdefinelanguage{Dockerfile}{
+  morekeywords={
+    FROM, RUN, CMD, LABEL, MAINTAINER, EXPOSE, ENV, ADD, COPY,
+    ENTRYPOINT, VOLUME, USER, WORKDIR, ARG, ONBUILD, STOPSIGNAL,
+    HEALTHCHECK, SHELL
+  },
+  sensitive=true,
+  morecomment=[l]{#},
+  morestring=[b]",
+  keywordstyle=\color{gruvblue}\bfseries,
+  commentstyle=\color{gruvgray}\ttfamily\itshape,
+  stringstyle=\color{gruvgreen}\ttfamily,
+  basicstyle=\ttfamily\color{gruvfg}\small,
+  backgroundcolor=\color{gruvbg},
+  numbers=left,
+  numberstyle=\tiny\color{gruvgray},
+  stepnumber=1,
+  numbersep=10pt,
+  showspaces=false,
+  showstringspaces=false,
+  tabsize=4,
+  captionpos=b,
+  breaklines=true,
+  breakatwhitespace=true,
+  escapeinside={(*@}{@*)}
+}
+
