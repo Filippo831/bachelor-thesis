@@ -1,0 +1,27 @@
+% Docker Compose style
+\lstdefinelanguage{DockerCompose}{
+    morekeywords={
+        version, services, image, build, context, dockerfile, ports, volumes, networks, environment, depends_on, command, entrypoint, restart, container_name
+    },
+    sensitive=false,
+    morecomment=[l]{\#},
+    morestring=[b]",
+    morestring=[b]',
+    backgroundcolor=\color{gruvbg},
+    basicstyle=\ttfamily\color{gruvfg},
+    keywordstyle=\color{gruvblue}\bfseries,
+    commentstyle=\color{gruvgray}\itshape,
+    stringstyle=\color{gruvgreen},
+    numberstyle=\tiny\color{gruvgray},
+    numbers=left,
+    stepnumber=1,
+    numbersep=10pt,
+    showspaces=false,
+    showstringspaces=false,
+    tabsize=4,
+    captionpos=b,
+    breaklines=true,
+    breakatwhitespace=true,
+    escapeinside={(*@}{@*)}
+}
+

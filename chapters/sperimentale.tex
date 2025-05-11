@@ -1,0 +1,29 @@
+\chapter{Sperimentale}
+\label{cha:Sperimentale}
+
+\section{Ambiente}
+Per effettuare i test delle performance del reverse proxy é stato utilizzato un server sperimentale eseguito all'interno di un container docker. Per avviare tutti i servizi necessari per effettuare i test é stato creato un docker compose con le direttive per avviare il reverse proxy e il server di test.
+
+\begin{lstlisting}[language=DockerCompose]
+version: "1.0"
+services:
+  web:
+    build: .
+    ports:
+      - "8081:8081"
+      - "8082:8082"
+    volumes:
+      - "./configuration.json:/configuration_docker.json"
+      - "./reverse_proxy.com+3.pem:/reverse_proxy.com+3.pem"
+      - "./reverse_proxy.com+3-key.pem:/reverse_proxy.com+3-key.pem"
+      - "./log_file.log:/log_file.log"
+
+  testserver:
+    image: "kennethreitz/httpbin"
+    ports:
+      - "8080:80"
+\end{lstlisting}
+
+\subsection{httpbin}
+\cite{httpbin}
+Httpbin é un server con delle chiamate base che possono essere utilizzate per testare i propri dispositivi. Si possono quindi testare chiamate semplici come semplici \texttt{GET} e \texttt{POST} ma anche alcune piú complesse come chiamate per verificare il funzionamento dei cookies oppure per verificare i redirect. Di questo servizio esiste giá la versione containerizzata nello store di docker che quindi ha reso l'utilizzo immediato.
