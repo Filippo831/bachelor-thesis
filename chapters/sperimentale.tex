@@ -2,6 +2,7 @@
 \label{cha:Sperimentale}
 
 \section{Ambiente}
+\subsection{rete docker}
 Per effettuare i test delle performance del reverse proxy é stato utilizzato un server sperimentale eseguito all'interno di un container docker. Per avviare tutti i servizi necessari per effettuare i test é stato creato un docker compose con le direttive per avviare il reverse proxy e il server di test.
 
 \begin{lstlisting}[language=DockerCompose]
@@ -13,7 +14,7 @@ services:
       - "8081:8081"
       - "8082:8082"
     volumes:
-      - "./configuration.json:/configuration_docker.json"
+      - "./configuration_docker.json:/configuration.json"
       - "./reverse_proxy.com+3.pem:/reverse_proxy.com+3.pem"
       - "./reverse_proxy.com+3-key.pem:/reverse_proxy.com+3-key.pem"
       - "./log_file.log:/log_file.log"
@@ -27,3 +28,44 @@ services:
 \subsection{httpbin}
 \cite{httpbin}
 Httpbin é un server con delle chiamate base che possono essere utilizzate per testare i propri dispositivi. Si possono quindi testare chiamate semplici come semplici \texttt{GET} e \texttt{POST} ma anche alcune piú complesse come chiamate per verificare il funzionamento dei cookies oppure per verificare i redirect. Di questo servizio esiste giá la versione containerizzata nello store di docker che quindi ha reso l'utilizzo immediato.
+
+\subsection{jmeter}
+\cite{jmeter}
+Jmeter é un software principalmente utilizzato per testare servizi che si basano su protocolli di communicazione di quinto livello. Quindi si possono testare API tramite il protocollo http o https, ma anche condivisione mail con POP3 o IMAP e altri come FTP.
+
+\subsection{wireshark}
+\cite{wireshark}
+Wireshark é un software per analizzare il traffico passante per un porta di rete. Una volta dato l'accesso alla porta direte, wireshark mostra tutti i pacchetti tcp/udp che passano per quella porta. Quindi in questo caso si parla di protocolli di quarto livello.
+
+\section{Elenco dei test}\label{test:settings}
+Per verificare le performance del reverse proxy e valutare le differenze rispetto a una connessione diretta al servizio, sono stati effettuati test in quattro situazioni differenti.
+\begin{enumerate}
+  \item
+    \begin{itemize}
+      \item Reverse proxy: non collegato
+      \item server: connesso tramite \texttt{http}
+    \end{itemize}
+  \item
+    \begin{itemize}
+      \item Reverse proxy: connesso tramite \texttt{http}
+      \item server: connesso tramite \texttt{http}
+    \end{itemize}
+  \item
+    \begin{itemize}
+      \item Reverse proxy: connesso tramite \texttt{https}
+      \item server: connesso tramite \texttt{http}
+    \end{itemize}
+\end{enumerate}
+I fattori interessanti da valutare analizzando i risultati di questi test sono:
+\begin{itemize}
+  \item Quanta differeza di velocitá e grandezza dei pacchetti c'é tra una connessione non criptata e una criptata.
+  \item Quanto differisce la velocitá di accesso alle risorse del server tra la connessione diretta e l'utilizzo di un reverse proxy.
+\end{itemize}
+
+\section{Procedura esecuzione test}
+Per ognuna delle configurazioni definite precedentemente\ref{test:settings} vengono fatte 2 tipologie di test.
+\begin{enumerate}
+  \item Tramite wireshark viene tracciata una richiesta al server per poi verificare la quantitá di pacchetti inviati, la loro dimensione totale e il tempo che ci mette ad ultimare.
+  \item Tramite jmeter viene fatto un test a carico, cioé generando molte richieste e tenendo traccia del tempo impiegato per ultimarle e la dimensione totale dei pacchetti inviati. In questo caso vengono fatte 1000 richieste per ogni test.
+
+\end{enumerate}
