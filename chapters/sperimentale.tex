@@ -69,3 +69,40 @@ Per ognuna delle configurazioni definite precedentemente\ref{test:settings} veng
   \item Tramite jmeter viene fatto un test a carico, cioé generando molte richieste e tenendo traccia del tempo impiegato per ultimarle e la dimensione totale dei pacchetti inviati. In questo caso vengono fatte 1000 richieste per ogni test.
 
 \end{enumerate}
+
+\section{Risultati}
+\subsection{Singola connessione}
+In tabella sono riportati la quantitá di pacchetti scambiati e la dimensione totale di questi per una singola richiesta.
+\begin{center}
+  \begin{tabular}{|c|c|c|}
+    \hline
+    condizione & numero pacchetti & dimensione totale (bytes) \\
+    \hline
+    \hline
+    http server & 14 & 9906 \\
+    \hline
+    http reverse proxy + http server & 14 + 12 = 26 & 9908 + 9961 = 19869 \\
+    \hline
+    https reverse proxy + http server & 27 + 14 = 41 & 12000 + 9961 = 21961 \\
+    \hline
+
+  \end{tabular}
+\end{center}
+  \subsection{1000 connessioni}
+  In tabella é riportato il tempo impiegato per effettuare 1000 connessioni in sequenza da signolo thread.
+  \begin{center}
+    \begin{tabular}{|c|c|c|c|}
+      \hline
+      condizione & risultati (s) & media (s) & variazione standart (s) \\
+      \hline
+      \hline
+      http server & \makecell {2.99 \\ 2.83 \\ 2.87} & 2.896 & 0.083 \\
+      \hline
+      http reverse proxy + http server & \makecell {4.00 \\ 3.95 \\ 3.92} & 3.956 & 0.040 \\
+      \hline
+      https reverse proxy + http server & \makecell {4.28 \\ 3.93 \\ 3.96} & 4,057 & 0,194 \\
+      \hline
+    \end{tabular}
+
+  \end{center}
+
