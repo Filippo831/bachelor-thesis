@@ -29,9 +29,9 @@ services:
 \cite{httpbin}
 Httpbin é un server con delle chiamate base che possono essere utilizzate per testare i propri dispositivi. Si possono quindi testare chiamate semplici come semplici \texttt{GET} e \texttt{POST} ma anche alcune piú complesse come chiamate per verificare il funzionamento dei cookies oppure per verificare i redirect. Di questo servizio esiste giá la versione containerizzata nello store di docker che quindi ha reso l'utilizzo immediato.
 
-\subsection{jmeter}
-\cite{jmeter}
-Jmeter é un software principalmente utilizzato per testare servizi che si basano su protocolli di communicazione di quinto livello. Quindi si possono testare API tramite il protocollo http o https, ma anche condivisione mail con POP3 o IMAP e altri come FTP.
+\subsection{ab}
+\cite{ab}
+\texttt{ab} é un comando incluso nel pacchetto \texttt{apache2-utils} che serve per fare test di carico nei server effettuando un numero di richieste http in sequenza.
 
 \subsection{wireshark}
 \cite{wireshark}
@@ -65,8 +65,15 @@ I fattori interessanti da valutare analizzando i risultati di questi test sono:
 \section{Procedura esecuzione test}
 Per ognuna delle configurazioni definite precedentemente\ref{test:settings} vengono fatte 2 tipologie di test.
 \begin{enumerate}
-  \item Tramite wireshark viene tracciata una richiesta al server per poi verificare la quantitá di pacchetti inviati, la loro dimensione totale e il tempo che ci mette ad ultimare.
-  \item Tramite jmeter viene fatto un test a carico, cioé generando molte richieste e tenendo traccia del tempo impiegato per ultimarle e la dimensione totale dei pacchetti inviati. In questo caso vengono fatte 1000 richieste per ogni test.
+  \item
+    \begin{itemize}
+      \item Tramite il comando \texttt curl viene inviata una richiesta get al server all'indirizzo\\
+        \texttt{\$ curl <URL>}
+        \item Poi con wireshark si controlla quanti pacchetti sono stati inviati per effettuare lo scambio di dati
+
+    \end{itemize}
+  \item Tramite ab viene fatto un test a carico, cioé generando molte richieste e tenendo traccia del tempo impiegato per ultimarle e la dimensione totale dei pacchetti inviati. In questo caso vengono fatte 1000 richieste da 1 solo thread per ogni test.\\
+    \texttt{\$ ab -n 1000 <URL>}
 
 \end{enumerate}
 
@@ -85,24 +92,59 @@ In tabella sono riportati la quantitá di pacchetti scambiati e la dimensione to
     \hline
     https reverse proxy + http server & 27 + 14 = 41 & 12000 + 9961 = 21961 \\
     \hline
-
   \end{tabular}
 \end{center}
-  \subsection{1000 connessioni}
-  In tabella é riportato il tempo impiegato per effettuare 1000 connessioni in sequenza da signolo thread.
-  \begin{center}
-    \begin{tabular}{|c|c|c|c|}
-      \hline
-      condizione & risultati (s) & media (s) & variazione standart (s) \\
-      \hline
-      \hline
-      http server & \makecell {2.99 \\ 2.83 \\ 2.87} & 2.896 & 0.083 \\
-      \hline
-      http reverse proxy + http server & \makecell {4.00 \\ 3.95 \\ 3.92} & 3.956 & 0.040 \\
-      \hline
-      https reverse proxy + http server & \makecell {4.28 \\ 3.93 \\ 3.96} & 4,057 & 0,194 \\
-      \hline
-    \end{tabular}
+\begin{center}
+  \begin{tikzpicture}
+    \begin{axis}[
+        ybar,
+        title={dimensione dei pacchetti inviati},
+        bar width=0.7cm,
+        ylabel={bytes},
+        symbolic x coords={http, http+http, http+https},
+        xtick=data,
+        enlarge x limits=0.3,
+        ymin=0,
+      ]
+      \addplot
+        coordinates {(http+https,21961) (http+http,19869) (http,9906)};
+    \end{axis}
+  \end{tikzpicture}
+\end{center}
 
-  \end{center}
+
+\subsection{1000 connessioni}
+In tabella é riportato il tempo impiegato per effettuare 1000 connessioni in sequenza da signolo thread.
+\begin{center}
+  \begin{tabular}{|c|c|c|c|}
+    \hline
+    condizione & risultati (s) & media (s) & variazione standart (s) \\
+    \hline
+    \hline
+    http server & \makecell {2.960 \\ 2.874 \\ 2.967} & 2.933 & 0.051 \\
+    \hline
+    http reverse proxy + http server & \makecell {4.539 \\ 4.521 \\ 4.512} & 4.524 & 0.014 \\
+    \hline
+    https reverse proxy + http server & \makecell {10.426 \\ 10.415 \\ 10.426} & 10.426 & 0.006 \\
+    \hline
+  \end{tabular}
+\end{center}
+
+\begin{center}
+  \begin{tikzpicture}
+    \begin{axis}[
+        ybar,
+        bar width=0.7cm,
+        title={tempo impiegato per effettuare 1000 connessioni},
+        ylabel={secondi},
+        symbolic x coords={http, http+http, http+https},
+        xtick=data,
+        enlarge x limits=0.3,
+        ymin=0,
+      ]
+      \addplot
+        coordinates {(http+https,10.426) (http+http,4.524) (http,2.933)};
+    \end{axis}
+  \end{tikzpicture}
+\end{center}
 
