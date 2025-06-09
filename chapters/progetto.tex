@@ -200,8 +200,7 @@ proxy := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	return
   }
 \end{lstlisting}
-
-Una volta trovato l'indirizzo del server destinatario si puó creare la richiesta da inviare.
+Una volta trovato l'indirizzo del server destinatario si puó creare la richiesta da inviare. La richiesta includerá nell'header anche la voce \texttt{X-Forwarded-For} che tiene traccia del client originale che ha fatto la richiesta. Viene aggiunto perché altrimenti viene persa l'informazione di chi ha fatto originariamente la richiesta, informazione che potrebbe utilizzare il server per motivi di sicurezza o gestione delle sessioni.
 \begin{lstlisting}[language=Golang]
 	r.Host = redirectURL.Host
 	r.URL.Host = redirectURL.Host

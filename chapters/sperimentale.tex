@@ -3,12 +3,12 @@
 
 \section{Ambiente}
 \subsection{rete docker}
-Per effettuare i test delle performance del reverse proxy é stato utilizzato un server sperimentale eseguito all'interno di un container docker. Per avviare tutti i servizi necessari per effettuare i test é stato creato un docker compose con le direttive per avviare il reverse proxy e il server di test.
+Per effettuare i test delle performance del reverse proxy é stato utilizzato un server sperimentale eseguito all'interno di un container docker. Per avviare tutti i servizi necessari per effettuare i test é stato creato un docker compose con le direttive per avviare il reverse proxy, il server di test e un'istanza di ubuntu da dove effettuare le richieste.
 
 \begin{lstlisting}[language=DockerCompose]
 version: "1.0"
 services:
-  web:
+  reverse:
     build: .
     ports:
       - "8081:8081"
@@ -23,6 +23,13 @@ services:
     image: "kennethreitz/httpbin"
     ports:
       - "8080:80"
+
+  ubuntu:
+    container_name: ubuntu
+    image: ubuntu
+    restart: on-failure
+    command: ["sleep","infinity"]
+
 \end{lstlisting}
 
 \subsection{httpbin}
@@ -101,20 +108,20 @@ In tabella sono riportati la quantitá di pacchetti scambiati e la dimensione to
         title={dimensione dei pacchetti inviati},
         bar width=0.7cm,
         ylabel={bytes},
-        symbolic x coords={http, http+http, http+https},
+        symbolic x coords={http, http+http, https+http},
         xtick=data,
         enlarge x limits=0.3,
         ymin=0,
       ]
       \addplot
-        coordinates {(http+https,21961) (http+http,19869) (http,9906)};
+        coordinates {(https+http,21961) (http+http,19869) (http,9906)};
     \end{axis}
   \end{tikzpicture}
 \end{center}
 
 
-\subsection{1000 connessioni}
-In tabella é riportato il tempo impiegato per effettuare 1000 connessioni in sequenza da signolo thread.
+\subsection{1000 richieste}
+In tabella é riportato il tempo impiegato per effettuare 1000 richiese in sequenza da signolo thread.
 \begin{center}
   \begin{tabular}{|c|c|c|c|}
     \hline
@@ -135,16 +142,25 @@ In tabella é riportato il tempo impiegato per effettuare 1000 connessioni in se
     \begin{axis}[
         ybar,
         bar width=0.7cm,
-        title={tempo impiegato per effettuare 1000 connessioni},
+        title={tempo impiegato per effettuare 1000 richieste},
         ylabel={secondi},
-        symbolic x coords={http, http+http, http+https},
+        symbolic x coords={http, http+http, https+http},
         xtick=data,
         enlarge x limits=0.3,
         ymin=0,
       ]
       \addplot
-        coordinates {(http+https,10.426) (http+http,4.524) (http,2.933)};
+        coordinates {(https+http,10.426) (http+http,4.524) (http,2.933)};
     \end{axis}
   \end{tikzpicture}
 \end{center}
 
+\subsection{Analisi risultati}
+\subsubsection{Singola connessione}
+Andando ad analizzare i risultati del test a singola connessione si possono vedere dei valore che ci si poteva aspettare considerando il funzionamento di un reverse proxy.
+\begin{itemize}
+  \item Prendendo in considerazione solamente la coppia \textbf{http e http + http} si puó notare che il risultato della seconda configurazione é praticamente doppio rispetto alla prima. Questo ce lo si poteva aspettare considerando il fatto che il reverse proxy non fa altro che copiare le richieste e le risposte inoltrandole all'altro nodo. Si possono vedere peró delle piccole differenze nella dimensione dei pacchetti tra il reverse proxy e il server. Questo é dovuto alla grandezza maggiore dell'header dovuta all'inserimento del campo \texttt{X-Forwarded-For}.
+  \item Analizzando ora la coppia di risultati \textbf{http + http e https + http} si vede una differenza piccola e, facendo riferimento alla tabella, appartenente solamente allo scambio di pacchetti tra client e reverse proxy. Causa di questa differenza é il livella di sicurezza aggiunto alla connessione che necessita di scambiare informazioni per effettuare la criptazione dei dati. Come visto prima \ref{arte:handshake} per effettuare lo scambio in modo sicuro bisogna scambiare chiavi e concordarsi su alcune variabili. Questo processo fa si che la dimensione finale della connessione aumenti leggermente. Per richieste che implicano uno scambio di dati maggiore la differenza diminuisce visto che il processo viene fatto solo una volta.
+\end{itemize}
+
+\subsubsection{1000 richieste}
