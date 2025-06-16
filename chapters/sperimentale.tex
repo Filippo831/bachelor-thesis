@@ -155,12 +155,16 @@ In tabella é riportato il tempo impiegato per effettuare 1000 richiese in seque
   \end{tikzpicture}
 \end{center}
 
-\subsection{Analisi risultati}
-\subsubsection{Singola connessione}
+\section{Analisi risultati}
+\subsection{Singola connessione}
 Andando ad analizzare i risultati del test a singola connessione si possono vedere dei valore che ci si poteva aspettare considerando il funzionamento di un reverse proxy.
 \begin{itemize}
   \item Prendendo in considerazione solamente la coppia \textbf{http e http + http} si puó notare che il risultato della seconda configurazione é praticamente doppio rispetto alla prima. Questo ce lo si poteva aspettare considerando il fatto che il reverse proxy non fa altro che copiare le richieste e le risposte inoltrandole all'altro nodo. Si possono vedere peró delle piccole differenze nella dimensione dei pacchetti tra il reverse proxy e il server. Questo é dovuto alla grandezza maggiore dell'header dovuta all'inserimento del campo \texttt{X-Forwarded-For}.
   \item Analizzando ora la coppia di risultati \textbf{http + http e https + http} si vede una differenza piccola e, facendo riferimento alla tabella, appartenente solamente allo scambio di pacchetti tra client e reverse proxy. Causa di questa differenza é il livella di sicurezza aggiunto alla connessione che necessita di scambiare informazioni per effettuare la criptazione dei dati. Come visto prima \ref{arte:handshake} per effettuare lo scambio in modo sicuro bisogna scambiare chiavi e concordarsi su alcune variabili. Questo processo fa si che la dimensione finale della connessione aumenti leggermente. Per richieste che implicano uno scambio di dati maggiore la differenza diminuisce visto che il processo viene fatto solo una volta.
 \end{itemize}
 
-\subsubsection{1000 richieste}
+\subsection{1000 richieste}
+Tramite l'analisi delle tempistiche di 1000 richieste si puó vedere la differenza tra il tempo impiegato ad eseguire una comunicazione in chiaro e una criptata. Concentrandosi sulla coppia di risultati \textbf{http+http} e \textbf{https+http} possiamo notare bene questa differenza. Infatti i risultati dicono che criptare una delle due connessioni aumenti il tempo impiegato del 230\%. La differenza in questo caso é sostanziale perché i test sono stati fatti su una macchina virutale con prestazioni limitate. Se la connessione viene fatta sul sistema operativo di host che quindi ha accesso a tutte le risorse, la differenza diminuisce.\\
+Interessante peró é anche la differenza che si presenta tra \textbf{http} e \textbf{http+http}. Come si puó notare nel caso di utilizzo del reverse proxy il tempo totale aumenta, causa la duplicazione delle richieste. L'aumento peró non é doppio come magari ci si potrebbe immaginare, ma del 154\%. Questo é dovuto dal fatto che il server impiega un tempo maggiore a processare le richieste del reverse proxy perché quest'ultimo deve solo inoltrarle. Quindi il tempo totale impiegato dal reverse proxy per processare le richieste é minore rispetto al tempo impiegato dal server.
+\section{Conclusioni}
+Tramite questi test si é potuto analizzare il funzionamento di un reverse proxy e la sua influenza nelle prestazioni. Infatti i risultati evidenziano il lato negativo piú grande di questo dispositivo, cioé la duplicazione delle richieste. Infatti sia dal test per verificare la dimensione dei pacchetti che quello delle tempistiche vediamo che viene a crearsi un rallentamento dovuto a questa duplicazione.
