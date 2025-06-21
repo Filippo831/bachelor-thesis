@@ -2,8 +2,7 @@
 \label{cha:Progetto}
 
 \section{Descrizione}
-Il progetto consiste è nell'implementazione di un reverse proxy nel linguaggio di programmazione go e successivamente containerizzato tramite docker. Il reverse proxy sviluppato effettua alcune delle funzionalità basi necessarie per la comunicazione. Le funzionalitá implementate sono quindi quelle di routing, supporto a https e wss tramite TLS, e la possibilitá di configurarlo tramite file json.
-
+Il progetto consiste l'implementazione di un dispositivo di reverse proxy utilizzando il linguaggio di programmazione go e la sua successiva containerizzazione tramite docker per facilitarne la portabilitá. Le funzionalitá sviluppate sono quelle di base necessarie per effettuare le comunicazioni. Oltre alla fondamentale capacitá di fare routing, essenziale per il funzionamento di un reverse proxy, é stata implementata la possibilitá di configurare le regole di routing tramite un file \texttt{json} cosí da rendere il dispositivo facilmente adattabile alle esigenze. I protocolli supportati sono http, https, ws (WebSocket) e wss (Secure WebSocket).
 \section{Obiettivi}
 \subsection{Implementativi}
 L'obiettivo principale di questo progetto era quello di creare un software che riuscisse a funzionare con comunicazioni http. La lista degli obiettivi inizialmente quindi era:

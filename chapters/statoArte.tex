@@ -10,7 +10,7 @@
 \subsection{Cos'é}
 Un reverse proxy è un dispositivo utilizzato nelle comunicazioni tra client e server. Questo dispositivo si interpone nelle comunicazioni nel lato dei server. Quindi viene utilizzato nella rete locale dove sono presenti i server e diventa l'unico nodo di accesso verso la rete globale. Ogni server quindi non sarà direttamente collegato al client che effettua la richiesta, ma é collegato al reverse proxy che successivamente inoltrerá le richieste ai relativi server e le risposte ai relativi client. Si fa ció cosí si diminuisce il carico di lavoro ai server perché non devono effettuare i controlli di sicurezza, che vengono invece effettuati direttamente dal reverse proxy. Inoltre, visto che tutte le comunicazioni passano per quel nodo, si può avere una visione piú generale di tutte le comunicazioni entranti e rilevare piú facilmente comportamenti anomali.
 \subsubsection{Differenza con il forward proxy}
-Il forward proxy è un dispositivo che funziona praticamente allo stesso modo peró si trova nella rete locale dei client. Quindi se si hanno più client ma si vuole avere solo un nodo di uscita verso la rete globale, si può utilizzare un forward proxy.
+Il forward proxy, o comunemente chiamato anche proxy, é un dispositivo che si interpone tra i client e la rete globale. Le richieste effettuate dai client e le successive risposte passano quindi dal forward proxy che poi le inoltra al giusto destinatario. Anche in questa configurazione il proxy viene utilizzato principalmente per motivi di sicurezza.
 
 \subsection{Esempio comunicazione}
 \subsubsection{Elementi}
