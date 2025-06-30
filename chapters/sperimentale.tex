@@ -3,7 +3,7 @@
 
 \section{Ambiente}
 \subsection{rete docker}
-Per effettuare i test delle performance del reverse proxy é stato utilizzato un server sperimentale eseguito all'interno di un container docker. Per avviare tutti i servizi necessari per effettuare i test é stato creato un docker compose con le direttive per avviare il reverse proxy, il server di test e un'istanza di ubuntu da dove effettuare le richieste.
+Per effettuare i test delle performance del reverse proxy è stato utilizzato un server sperimentale eseguito all'interno di un container docker. Per avviare tutti i servizi necessari per effettuare i test é stato creato un docker compose con le direttive per avviare il reverse proxy, il server di test e un'istanza di ubuntu da dove effettuare le richieste.
 
 \begin{lstlisting}[language=DockerCompose]
 version: "1.0"
@@ -34,7 +34,7 @@ services:
 
 \subsection{httpbin}
 \cite{httpbin}
-Httpbin é un server con delle chiamate base che possono essere utilizzate per testare i propri dispositivi. Si possono quindi testare chiamate semplici come semplici \texttt{GET} e \texttt{POST} ma anche alcune piú complesse come chiamate per verificare il funzionamento dei cookies oppure per verificare i redirect. Di questo servizio esiste giá la versione containerizzata nello store di docker che quindi ha reso l'utilizzo immediato.
+Httpbin é un server con delle chiamate base che possono essere utilizzate per testare i propri dispositivi. Si possono quindi testare chiamate semplici come semplici \texttt{GET} e \texttt{POST} ma anche alcune piú complesse come chiamate per verificare il funzionamento dei cookies oppure per verificare i redirect. Di questo servizio esiste già la versione containerizzata nello store di docker che quindi ha reso l'utilizzo immediato.
 
 \subsection{ab}
 \cite{ab}
@@ -42,7 +42,7 @@ Httpbin é un server con delle chiamate base che possono essere utilizzate per t
 
 \subsection{wireshark}
 \cite{wireshark}
-Wireshark é un software per analizzare il traffico passante per un porta di rete. Una volta dato l'accesso alla porta direte, wireshark mostra tutti i pacchetti tcp/udp che passano per quella porta. Quindi in questo caso si parla di protocolli di quarto livello.
+Wireshark è un software per analizzare il traffico passante per un porta di rete. Una volta dato l'accesso alla porta di rete, wireshark mostra tutti i pacchetti tcp/udp che passano per quella porta. Quindi in questo caso si parla di protocolli di quarto livello.
 
 \section{Elenco dei test}\label{test:settings}
 Per verificare le performance del reverse proxy e valutare le differenze rispetto a una connessione diretta al servizio, sono stati effettuati test in quattro situazioni differenti.
@@ -65,8 +65,8 @@ Per verificare le performance del reverse proxy e valutare le differenze rispett
 \end{enumerate}
 I fattori interessanti da valutare analizzando i risultati di questi test sono:
 \begin{itemize}
-  \item Quanta differeza di velocitá e grandezza dei pacchetti c'é tra una connessione non criptata e una criptata.
-  \item Quanto differisce la velocitá di accesso alle risorse del server tra la connessione diretta e l'utilizzo di un reverse proxy.
+  \item Quanta differenza di velocità e grandezza dei pacchetti c'è tra una connessione non criptata e una criptata.
+  \item Quanto differisce la velocità di accesso alle risorse del server tra la connessione diretta e l'utilizzo di un reverse proxy.
 \end{itemize}
 
 \section{Procedura esecuzione test}
@@ -79,7 +79,7 @@ Per ognuna delle configurazioni definite precedentemente\ref{test:settings} veng
         \item Poi con wireshark si controlla quanti pacchetti sono stati inviati per effettuare lo scambio di dati
 
     \end{itemize}
-  \item Tramite ab viene fatto un test a carico, cioé generando molte richieste e tenendo traccia del tempo impiegato per ultimarle e la dimensione totale dei pacchetti inviati. In questo caso vengono fatte 1000 richieste da 1 solo thread per ogni test.\\
+  \item Tramite ab viene fatto un test a carico, cioè generando molte richieste e tenendo traccia del tempo impiegato per ultimarle e la dimensione totale dei pacchetti inviati. In questo caso vengono fatte 1000 richieste da 1 solo thread per ogni test.\\
     \texttt{\$ ab -n 1000 <URL>}
 
 \end{enumerate}
@@ -121,11 +121,11 @@ In tabella sono riportati la quantitá di pacchetti scambiati e la dimensione to
 
 
 \subsection{1000 richieste}
-In tabella é riportato il tempo impiegato per effettuare 1000 richiese in sequenza da signolo thread.
+In tabella è riportato il tempo impiegato per effettuare 1000 richieste in sequenza da singolo thread.
 \begin{center}
   \begin{tabular}{|c|c|c|c|}
     \hline
-    condizione & risultati (s) & media (s) & variazione standart (s) \\
+    condizione & risultati (s) & media (s) & deviazione standard (s) \\
     \hline
     \hline
     http server & \makecell {2.960 \\ 2.874 \\ 2.967} & 2.933 & 0.051 \\
@@ -159,12 +159,12 @@ In tabella é riportato il tempo impiegato per effettuare 1000 richiese in seque
 \subsection{Singola connessione}
 Andando ad analizzare i risultati del test a singola connessione si possono vedere dei valore che ci si poteva aspettare considerando il funzionamento di un reverse proxy.
 \begin{itemize}
-  \item Prendendo in considerazione solamente la coppia \textbf{http e http + http} si puó notare che il risultato della seconda configurazione é praticamente doppio rispetto alla prima. Questo ce lo si poteva aspettare considerando il fatto che il reverse proxy non fa altro che copiare le richieste e le risposte inoltrandole all'altro nodo. Si possono vedere peró delle piccole differenze nella dimensione dei pacchetti tra il reverse proxy e il server. Questo é dovuto alla grandezza maggiore dell'header dovuta all'inserimento del campo \texttt{X-Forwarded-For}.
-  \item Analizzando ora la coppia di risultati \textbf{http + http e https + http} si vede una differenza piccola e, facendo riferimento alla tabella, appartenente solamente allo scambio di pacchetti tra client e reverse proxy. Causa di questa differenza é il livella di sicurezza aggiunto alla connessione che necessita di scambiare informazioni per effettuare la criptazione dei dati. Come visto prima \ref{arte:handshake} per effettuare lo scambio in modo sicuro bisogna scambiare chiavi e concordarsi su alcune variabili. Questo processo fa si che la dimensione finale della connessione aumenti leggermente. Per richieste che implicano uno scambio di dati maggiore la differenza diminuisce visto che il processo viene fatto solo una volta.
+  \item Prendendo in considerazione solamente la coppia \textbf{http e http + http} si può notare che il risultato della seconda configurazione è praticamente doppio rispetto alla prima. Questo ce lo si poteva aspettare considerando il fatto che il reverse proxy non fa altro che copiare le richieste e le risposte inoltrandole all'altro nodo. Si possono vedere però delle piccole differenze nella dimensione dei pacchetti tra il reverse proxy e il server. Questo é dovuto alla grandezza maggiore dell'header dovuta all'inserimento del campo \texttt{X-Forwarded-For}.
+  \item Analizzando ora la coppia di risultati \textbf{http + http e https + http} si vede una differenza piccola e, facendo riferimento alla tabella, appartenente solamente allo scambio di pacchetti tra client e reverse proxy. Causa di questa differenza è il livello di sicurezza aggiunto alla connessione che necessita di scambiare informazioni per effettuare la criptazione dei dati. Come visto prima \ref{arte:handshake} per effettuare lo scambio in modo sicuro bisogna scambiare chiavi e concordarsi su alcune variabili. Questo processo fa sì che la dimensione finale della connessione aumenti leggermente. Per richieste che implicano uno scambio di dati maggiore la differenza diminuisce visto che il processo viene fatto solo una volta.
 \end{itemize}
 
 \subsection{1000 richieste}
-Tramite l'analisi delle tempistiche di 1000 richieste si puó vedere la differenza tra il tempo impiegato ad eseguire una comunicazione in chiaro e una criptata. Concentrandosi sulla coppia di risultati \textbf{http+http} e \textbf{https+http} possiamo notare bene questa differenza. Infatti i risultati dicono che criptare una delle due connessioni aumenti il tempo impiegato del 230\%. La differenza in questo caso é sostanziale perché i test sono stati fatti su una macchina virutale con prestazioni limitate. Se la connessione viene fatta sul sistema operativo di host che quindi ha accesso a tutte le risorse, la differenza diminuisce.\\
-Interessante peró é anche la differenza che si presenta tra \textbf{http} e \textbf{http+http}. Come si puó notare nel caso di utilizzo del reverse proxy il tempo totale aumenta, causa la duplicazione delle richieste. L'aumento peró non é doppio come magari ci si potrebbe immaginare, ma del 154\%. Questo é dovuto dal fatto che il server impiega un tempo maggiore a processare le richieste del reverse proxy perché quest'ultimo deve solo inoltrarle. Quindi il tempo totale impiegato dal reverse proxy per processare le richieste é minore rispetto al tempo impiegato dal server.
+Tramite l'analisi delle tempistiche di 1000 richieste si può vedere la differenza tra il tempo impiegato ad eseguire una comunicazione in chiaro e una criptata. Concentrandosi sulla coppia di risultati \textbf{http+http} e \textbf{https+http} possiamo notare bene questa differenza. Infatti i risultati dicono che criptare una delle due connessioni aumenti il tempo impiegato del 230\%. La differenza in questo caso è sostanziale perché i test sono stati fatti su una macchina virtuale con prestazioni limitate. Se la connessione viene fatta sul sistema operativo di host che quindi ha accesso a tutte le risorse, la differenza diminuisce.\\
+Interessante peró é anche la differenza che si presenta tra \textbf{http} e \textbf{http+http}. Come si può notare nel caso di utilizzo del reverse proxy il tempo totale aumenta, causa la duplicazione delle richieste. L'aumento peró non è doppio come magari ci si potrebbe immaginare, ma del 154\%. Questo é dovuto dal fatto che il server impiega un tempo maggiore a processare le richieste del reverse proxy perché quest'ultimo deve solo inoltrarle. Quindi il tempo totale impiegato dal reverse proxy per processare le richieste é minore rispetto al tempo impiegato dal server.
 \section{Conclusioni}
-Tramite questi test si é potuto analizzare il funzionamento di un reverse proxy e la sua influenza nelle prestazioni. Infatti i risultati evidenziano il lato negativo piú grande di questo dispositivo, cioé la duplicazione delle richieste. Infatti sia dal test per verificare la dimensione dei pacchetti che quello delle tempistiche vediamo che viene a crearsi un rallentamento dovuto a questa duplicazione.
+Tramite questi test si è potuto analizzare il funzionamento di un reverse proxy e la sua influenza nelle prestazioni. Infatti i risultati evidenziano il lato negativo più grande di questo dispositivo, cioè la duplicazione delle richieste. Infatti sia dal test per verificare la dimensione dei pacchetti che quello delle tempistiche vediamo che viene a crearsi un rallentamento dovuto a questa duplicazione.

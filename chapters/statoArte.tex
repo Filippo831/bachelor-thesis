@@ -10,7 +10,7 @@
 \subsection{Cos'é}
 Un reverse proxy è un dispositivo utilizzato nelle comunicazioni tra client e server. Questo dispositivo si interpone nelle comunicazioni nel lato dei server. Quindi viene utilizzato nella rete locale dove sono presenti i server e diventa l'unico nodo di accesso verso la rete globale. Ogni server quindi non sarà direttamente collegato al client che effettua la richiesta, ma é collegato al reverse proxy che successivamente inoltrerá le richieste ai relativi server e le risposte ai relativi client. Si fa ció cosí si diminuisce il carico di lavoro ai server perché non devono effettuare i controlli di sicurezza, che vengono invece effettuati direttamente dal reverse proxy. Inoltre, visto che tutte le comunicazioni passano per quel nodo, si può avere una visione piú generale di tutte le comunicazioni entranti e rilevare piú facilmente comportamenti anomali.
 \subsubsection{Differenza con il forward proxy}
-Il forward proxy, o comunemente chiamato anche proxy, é un dispositivo che si interpone tra i client e la rete globale. Le richieste effettuate dai client e le successive risposte passano quindi dal forward proxy che poi le inoltra al giusto destinatario. Anche in questa configurazione il proxy viene utilizzato principalmente per motivi di sicurezza.
+Il forward proxy, o comunemente chiamato anche proxy, è un dispositivo che si interpone tra i client e la rete globale. Le richieste effettuate dai client e le successive risposte passano quindi dal forward proxy che poi le inoltra al giusto destinatario. Anche in questa configurazione il proxy viene utilizzato principalmente per motivi di sicurezza.
 
 \subsection{Esempio comunicazione}
 \subsubsection{Elementi}
@@ -26,23 +26,23 @@ Client: C\\ Reverse Proxy: R\\ Server1: S1; Server2: S2
 \begin{enumerate}
   \item
   \begin{verbatim}
-	GET /index.html HTTP/1.1
-	Host: primo.example.com
+    GET /index.html HTTP/1.1
+    Host: primo.example.com
   \end{verbatim}
-	C manda una richiesta tramite il dominio \textit{primo.example.com}
+    C manda una richiesta tramite il dominio \textit{primo.example.com}
   \item
-	\begin{verbatim}
-	GET /index.html HTTP/1.1
-	Host: 172.17.0.1
-	\end{verbatim}
-	R riceve la richiesta, vede che il dominio indicato ha \textit{primo} come sottodominio. Controlla nella configurazione e vede che \textit{primo.example.com} é collegato a S1. Crea quindi una richiesta uguale a quella ricevuta, cambiando il destinatario e indicando l'indirizzo ip di S1.
+    \begin{verbatim}
+    GET /index.html HTTP/1.1
+    Host: 172.17.0.1
+    \end{verbatim}
+    R riceve la richiesta, vede che il dominio indicato ha \textit{primo} come sottodominio. Controlla nella configurazione e vede che \textit{primo.example.com} é collegato a S1. Crea quindi una richiesta uguale a quella ricevuta, cambiando il destinatario e indicando l'indirizzo ip di S1.
   \item R riceve la risposta alla richiesta da S1.
   \item R invia la risposta ricevuta a C.
 \end{enumerate}
 
 
 \subsection{Perché viene utilizzato}
-L'utilizzo di una struttura che si pone in mezzo alle comunicazioni garantisce molti vantaggi visto che ha accesso a tutte le comunicazioni entranti. Il reverse proxy puó quindi analizzare le connessioni ed effettuare delle operazioni con queste ultime come ad esempio controlli per motivi di sicurezza, caching e load balancing. Inoltre in questo modo si puó accedere a piú servizi tramite lo stesso nodo di ingresso.
+L'utilizzo di una struttura che si pone in mezzo alle comunicazioni garantisce molti vantaggi visto che ha accesso a tutte le comunicazioni entranti. Il reverse proxy può quindi analizzare le connessioni ed effettuare delle operazioni con queste ultime come ad esempio controlli per motivi di sicurezza, caching e load balancing. Inoltre in questo modo si può accedere a più servizi tramite lo stesso nodo di ingresso.
 
 \subsection{Funzionalitá}
 Analizziamo adesso le funzionalità che un reverse proxy può offrire.
@@ -67,7 +67,7 @@ Sicuramente le funzionalitá piú importanti sono quelle relative alla sicurezza
 Avendo solo un nodo collegato alla rete globale, si possono collegare molteplici servizi attraverso un solo indirizzo IP. Per fare ciò si utilizzano i subdomain, cioè prefissi dell'URL base utilizzati per indirizzare risorse diverse. Con un reverse proxy si può fare un'associazione subdomain - server così da poterli indirizzare facilmente. La struttura dell'URL sará quindi \textit{http(s)://subdomain.example.com}.
 
 \subsubsection{Load Balancer}
-Se si hanno piú server che rispondono alle stesse richieste, si possono indirizzare le richieste in modo che il carico di lavoro sia distribuito equamente tra i vari server. In base all'algoritmo implementato il processo di load balancing puó essere fatto in modo accurato oppure piú grezzo. L'algoritmo scelto dipende molto dal caso d'uso.
+Se si hanno più server che rispondono alle stesse richieste, si possono indirizzare le richieste in modo che il carico di lavoro sia distribuito equamente tra i vari server. In base all'algoritmo implementato il processo di load balancing può essere fatto in modo accurato oppure piú grezzo. L'algoritmo scelto dipende molto dal caso d'uso.
 
 \subsection{Criticitá}
 \cite{risks}
@@ -83,7 +83,7 @@ Ovviamente il reverse proxy serve per aumentare il livello di sicurezza ma a sua
 
 \section{Http}
 \cite{http}
-Http é il protocollo che sta alla base di tutti gli scambi di informazioni sul Web. È un protocollo client-server, cioé sono presenti 2 soggetti principali, il client e il server. Il client é colui che manda le richieste e il server risponde con le informazioni desiderate.
+Http é il protocollo che sta alla base di tutti gli scambi di informazioni sul Web. È un protocollo client-server, cioè sono presenti 2 soggetti principali, il client e il server. Il client è colui che manda le richieste e il server risponde con le informazioni desiderate.
 \subsection{Struttura messaggi}
 \subsubsection{Richieste}
 \begin{verbatim}
@@ -92,7 +92,7 @@ Host: example.com
 \end{verbatim}
 \begin{itemize}[label={}]
   \item \textbf{GET}: indica il tipo di operazione che andiamo a fare. Le 2 operazioni piú comuni sono \texttt{GET} e \texttt{POST}. \texttt{GET} serve per richiedere dei dati al server, infatti non include un body nel messaggio. \texttt{POST} serve per inviare dati al server all'interno del body.
-  \item \textbf{/index.html}: percorso identificativo della risorsa. Il server associerà poi ad ogni percorso dei dati da inviare al client.
+  \item \textbf{/index.html}: percorso identificativo della risorsa. Il server assocerà poi ad ogni percorso dei dati da inviare al client.
   \item \textbf{HTTP/1.1}: specifica la versione del protocollo utilizzata.
   \item \textbf{Host: example.com}: header. Qui vengono inserite informazioni extra per dare maggiori informazioni circa i dati che stiamo richiedendo al server.
 \end{itemize}
@@ -158,11 +158,11 @@ Un'altro elemento molto importante nelle comunicazioni sono i certificati. Infat
 Per fare in modo che un utente si possa fidare del certificato appartenente al server si utilizza un sistema chiamato Chain of Trust. Il principio di funzionamento di questo sistema è quello di avere degli enti che emettono chiavi (issuer) che sono riconosciuti come affidabili (root of trust). Ogni browser quindi contiene una lista di issuer di cui si fida a prescindere e quando deve controllare un certificato va a vedere se l'issuer é presente in questa lista, se sì il certificato è considerato buono. Peró oltre a questi issuer di base ne esistono molti altri che non sono presenti nelle liste dei browser. Qui entra in gioco la Chain of Trust, infatti ogni issuer di secondo livello, quindi quelli che ereditano direttamente dagli issuer di base, contengono informazioni sull'issuer padre. Gli issuer di terzo invece conterranno informazioni sull'issuer di secondo che contiene quelle dell'issuer di base. In questo modo quando bisogna verificare un certificato si puó risalire la catena per arrivare all'issuer di base e verificare se quello é presente nella lista degli issuer affidabili.
 
 \subsection{Come verificare un certificato}
-Per verificare un certificato si utilizzano la coppia chiave pubblica e privata peró al contrario rispetto al loro utilizzo normale. In questo caso bisogna assicurarsi che il server con cui stiamo scambiando informazioni sia l'effettivo possessore del certificato e non qualcun altro che sta cercando di impersonificarlo. Per fare ció si sfrutta il fatto che la chiave privata viene posseduta solamente dal server mentre quella pubblica viene condivisa con tutti. Quindi il server cripta le informazioni del certificato con la chiave privata e poi le invia al client. Il client con la chiave pubblica decripta le informazioni, che verranno decriptate correttamente solo se é stata effettivamente utilizzata la chiave privata giusta precedentemente. In questo modo, essendo il server l'unico con la chiave privata, si può verificare la sua identitá.
+Per verificare un certificato si utilizzano la coppia chiave pubblica e privata peró al contrario rispetto al loro utilizzo normale. In questo caso bisogna assicurarsi che il server con cui stiamo scambiando informazioni sia l'effettivo possessore del certificato e non qualcun altro che sta cercando di impersonificarlo. Per fare ciò si sfrutta il fatto che la chiave privata viene posseduta solamente dal server mentre quella pubblica viene condivisa con tutti. Quindi il server cripta le informazioni del certificato con la chiave privata e poi le invia al client. Il client con la chiave pubblica decripta le informazioni, che verranno decriptate correttamente solo se é stata effettivamente utilizzata la chiave privata giusta precedentemente. In questo modo, essendo il server l'unico con la chiave privata, si può verificare la sua identità.
 
 \section{Container}
 \subsection{Cosa sono}
-\cite{container}I container sono software eseguibili che contengono tutte le dipendenze per essere eseguiti come librerie, binari e file di configurazione. Indipendentemente dal sistema "host", cioé il sistema su cui viene eseguito il container, quest'ultimo funzionerá sempre allo stesso modo. Per uno sviluppatore questo é molto importante perché altrimenti dovrebbe creare delle versioni diverse dello stesso software per adattarle a ogni tipo di sistema operativo.
+\cite{container}I container sono software eseguibili che contengono tutte le dipendenze per essere eseguiti come librerie, binari e file di configurazione. Indipendentemente dal sistema "host", cioè il sistema su cui viene eseguito il container, quest'ultimo funzionerá sempre allo stesso modo. Per uno sviluppatore questo é molto importante perché altrimenti dovrebbe creare delle versioni diverse dello stesso software per adattarle a ogni tipo di sistema operativo.
 \subsection{Differenze dalle macchine virtuali}
 \begin{enumerate}
   \item \textbf{kernel}: I container si appoggiano sul kernel del sistema operativo ospitante, mentre le macchine virtuali sono un sistema operativo che gira sopra il sistema operativo ospitante, con anche l'hardware che viene simulato. Questa differenza rende i container molto piú leggeri sia come utilizzo di risorse che come dimensione effettiva del software.
@@ -171,7 +171,3 @@ Per verificare un certificato si utilizzano la coppia chiave pubblica e privata 
 
 \subsection{Docker}
 \cite{docker}Docker è attualmente il software maggiormente utilizzato per la creazione, gestione ed esecuzione dei container. La sua popolaritá è dovuta principalmente alla semplicitá di utilizzo e alla gestione dei container.
-
-
-
-
