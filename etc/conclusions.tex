@@ -1,8 +1,8 @@
-\chapter{Conclusions}
+\chapter{Conclusioni}
 \label{cha:conclusions}
 
 All'interno di questa tesi si é andati ad analizzare il funzionamento di un dispositivo di reverse proxy e una sua possibile implementazione.\\\\
 La prima parte si é concentrata nel spiegare a livello teorico come funziona un dispositivo di questo tipo con i relativi vantaggi e svantaggi. Inoltre sono stati fatti dei cenni di funzionamento delle comunicazioni http per comprendere al meglio il funzionamento. É stato quindi spiegato il funzionamento delle comunicazioni web tramite le i protocolli http, tls e l'utilizza di certificati. Ultimo argomento teorico trattato sono i container visto che sono stati utilizzati per effettuare i test.\\\\
 Nella seconda parte si é andati a vedere come implementare un reverse proxy nel linguaggio di programmazione go includendo il supporto a https, websocket e http3 e la successiva containerizzazione tramite docker.\\\\
 Infine sono stati effettuati dei test di utilizzo per capire quali possono essere gli effetti dell'utilizzo di un reverse proxy sulle performance generali della rete.\\\\
-Grazie a queste analisi si riesce a capire come mai l'utilizza dei reverse proxy sia notevole grazie ai vantaggi che questo porta. Infatti avere un nodo centrale che gestisce le comunicazioni e la sicurezza di queste rende piú facile la gestione dell'infrastruttura sia che abbia grandi dimensioni oppure piccole, come potrebbe essere un sistema di server casalingo.
+Grazie a queste analisi si riesce a capire come mai i reverse proxy siano ampliamente utilizzati grazie ai vantaggi che questo porta. Infatti avere un nodo centrale che gestisce le comunicazioni e la sicurezza di queste rende piú facile la gestione dell'infrastruttura, indipendentemente dalle sue dimensioni.
